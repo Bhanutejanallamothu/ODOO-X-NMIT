@@ -48,6 +48,22 @@ const ProfilePage = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) { // limit 2MB
+        setError('Image file size cannot exceed 2MB.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({ ...prev, profilePicture: reader.result }));
+        setError('');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaveLoading(true);
@@ -121,9 +137,13 @@ const ProfilePage = () => {
             
             {/* Header info */}
             <div className="flex items-center space-x-4">
-              <div className="h-16 w-16 rounded-full bg-brand-100 flex items-center justify-center text-brand-700 font-extrabold text-2xl">
-                {profile?.name ? profile.name.split(' ').map(n=>n[0]).join('').toUpperCase() : 'U'}
-              </div>
+              {profile?.profile_picture ? (
+                <img src={profile.profile_picture} alt="Profile" className="h-16 w-16 rounded-full object-cover border-2 border-slate-100 shadow-sm shrink-0" />
+              ) : (
+                <div className="h-16 w-16 rounded-full bg-brand-100 flex items-center justify-center text-brand-700 font-extrabold text-2xl border-2 border-slate-100 shrink-0">
+                  {profile?.name ? profile.name.split(' ').map(n=>n[0]).join('').toUpperCase() : 'U'}
+                </div>
+              )}
               <div>
                 <h2 className="text-xl font-bold text-slate-800">{profile?.name}</h2>
                 <div className="flex items-center space-x-2 text-sm text-slate-400 mt-1 font-semibold">
@@ -173,6 +193,42 @@ const ProfilePage = () => {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
+            
+            {/* Profile Photo Uploader */}
+            <div className="flex items-center space-x-4 mb-4 pb-4 border-b border-slate-100">
+              <div>
+                {formData.profilePicture ? (
+                  <img src={formData.profilePicture} alt="Preview" className="h-16 w-16 rounded-full object-cover border-2 border-brand-500 shadow-sm" />
+                ) : (
+                  <div className="h-16 w-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 font-bold text-sm border-2 border-slate-200">
+                    No Photo
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-col space-y-1">
+                <span className="text-xs font-bold text-slate-700">Profile Photo</span>
+                <label className="text-xs font-bold text-brand-600 hover:text-brand-800 hover:underline cursor-pointer transition-colors">
+                  Upload Image File
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                </label>
+                {formData.profilePicture && (
+                  <button
+                    type="button"
+                    onClick={() => setFormData(prev => ({ ...prev, profilePicture: '' }))}
+                    className="text-[10px] font-bold text-rose-500 hover:text-rose-700 hover:underline text-left cursor-pointer"
+                  >
+                    Remove Photo
+                  </button>
+                )}
+                <span className="text-[10px] text-slate-400 font-medium">Max size: 2MB (JPG, PNG)</span>
+              </div>
+            </div>
+
             <Input
               label="Full Name"
               name="name"

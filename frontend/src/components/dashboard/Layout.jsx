@@ -83,9 +83,13 @@ const Layout = () => {
 
         {/* User Card */}
         <div className="px-6 py-5 border-b border-slate-100 flex items-center space-x-3 bg-slate-50/50">
-          <div className="h-10 w-10 rounded-full bg-brand-100 flex items-center justify-center text-brand-700 font-bold shrink-0">
-            {user?.name ? user.name.split(' ').map(n=>n[0]).join('').toUpperCase() : 'U'}
-          </div>
+          {user?.profilePicture ? (
+            <img src={user.profilePicture} alt="Profile" className="h-10 w-10 rounded-full object-cover shrink-0 border border-slate-200" />
+          ) : (
+            <div className="h-10 w-10 rounded-full bg-brand-100 flex items-center justify-center text-brand-700 font-bold shrink-0">
+              {user?.name ? user.name.split(' ').map(n=>n[0]).join('').toUpperCase() : 'U'}
+            </div>
+          )}
           <div className="min-w-0">
             <h4 className="text-sm font-bold text-slate-700 truncate">{user?.name}</h4>
             <div className="flex items-center space-x-1.5 mt-0.5">
