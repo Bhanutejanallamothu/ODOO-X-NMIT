@@ -68,7 +68,24 @@ node tests/verify_db.js
 ```
 *Note: The backend is programmed to automatically check if the database exists, create it, create the tables from `schema.sql`, and populate mock data from `seed.sql` on startup!*
 
-### 2. Run Backend Server
+### 2. Single-Command Launch (Recommended)
+You can build and start both servers concurrently using the provided launcher:
+
+**On Windows:**
+Simply double-click the `run.bat` file in the root directory.
+
+**Or via Terminal (Cross-platform):**
+Run the following command in the root directory:
+```bash
+node run.js
+```
+*This command will check for missing dependencies, run `npm install` automatically in both folders if needed, and spin up both dev servers with color-coded log outputs.*
+
+---
+
+### 3. Manual Server Launch (Alternative)
+
+**Run Backend Server:**
 ```bash
 cd backend
 npm install
@@ -76,7 +93,7 @@ npm run dev
 ```
 The server will run on `http://localhost:5000`.
 
-### 3. Run Frontend Server
+**Run Frontend Server:**
 In a separate terminal window:
 ```bash
 cd frontend
