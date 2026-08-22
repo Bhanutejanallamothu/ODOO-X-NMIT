@@ -4,7 +4,7 @@ const { generateSalarySlipText } = require('../services/reportService');
 const getMyPayroll = async (req, res, next) => {
   try {
     const result = await db.query(
-      'SELECT * FROM payrolls WHERE user_id = $1 ORDER BY year DESC, month DESC',
+      'SELECT * FROM payrolls WHERE user_id = ? ORDER BY year DESC, month DESC',
       [req.user.id]
     );
     res.status(200).json({ success: true, payrolls: result.rows });
@@ -39,7 +39,7 @@ const upsertPayroll = async (req, res, next) => {
 
     // Check if payroll already exists for this user, month, and year
     const checkResult = await db.query(
-      'SELECT id FROM payrolls WHERE user_id = $1 AND month = $2 AND year = $3',
+      'SELECT id FROM payrolls WHERE user_id = ? AND month = ? AND year = ?',
       [userId, month, year]
     );
 
@@ -47,16 +47,16 @@ const upsertPayroll = async (req, res, next) => {
     if (checkResult.rowCount > 0) {
       result = await db.query(
         `UPDATE payrolls 
-         SET base_salary = $1, deductions = $2, allowances = $3, net_salary = $4 
-         WHERE user_id = $5 AND month = $6 AND year = $7 
-         RETURNING *`,
+         SET base_salary = ?, deductions = ?, allowances = ?, net_salary = ? 
+         WHERE user_id = ? AND month = ? AND year = ? 
+         `,
         [base, ded, alw, net, userId, month, year]
       );
     } else {
       result = await db.query(
         `INSERT INTO payrolls (user_id, base_salary, deductions, allowances, net_salary, month, year) 
-         VALUES ($1, $2, $3, $4, $5, $6, $7) 
-         RETURNING *`,
+         VALUES (?, ?, ?, ?, ?, ?, ?) 
+         `,
         [userId, base, ded, alw, net, month, year]
       );
     }
@@ -77,7 +77,7 @@ const getSalarySlip = async (req, res, next) => {
   try {
     // 1. Fetch payroll
     const payrollRes = await db.query(
-      'SELECT * FROM payrolls WHERE id = $1',
+      'SELECT * FROM payrolls WHERE id = ?',
       [payrollId]
     );
 
@@ -97,7 +97,7 @@ const getSalarySlip = async (req, res, next) => {
       `SELECT p.name, p.department, p.job_title, u.employee_id 
        FROM profiles p 
        JOIN users u ON p.user_id = u.id 
-       WHERE p.user_id = $1`,
+       WHERE p.user_id = ?`,
       [payroll.user_id]
     );
 
