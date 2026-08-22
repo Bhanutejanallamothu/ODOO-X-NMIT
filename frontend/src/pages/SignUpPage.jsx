@@ -77,38 +77,38 @@ const SignUpPage = () => {
     }
   };
 
-  const inputClasses = "w-full h-[40px] px-3.5 bg-[#EEF1F7] rounded-md border border-[rgba(255,255,255,0.8)] shadow-[inset_2px_2px_5px_rgba(163,169,183,0.18),inset_-2px_-2px_5px_rgba(255,255,255,0.75)] text-[13px] text-[#252A34] focus:outline-none focus:border-[#7C3AED]/40 focus:ring-1 focus:ring-[#7C3AED]/30 transition-all placeholder:text-[#687080]/50";
-  const labelClasses = "text-[12px] font-semibold text-[#687080]";
+  const inputClasses = "w-full h-[40px] px-3.5 bg-[#F0F0F0] rounded-md border border-[rgba(255,255,255,0.8)] shadow-[inset_2px_2px_5px_rgba(0,0,0,0.08),inset_-2px_-2px_5px_rgba(255,255,255,0.75)] text-[13px] text-black focus:outline-none focus:border-black/40 focus:ring-1 focus:ring-black/20 transition-all placeholder:text-[#888888]";
+  const labelClasses = "text-[12px] font-bold text-[#555555]";
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#E9ECF4] px-4 py-12 font-sans">
+    <div className="min-h-screen flex items-center justify-center bg-[#EBEBEB] px-4 py-12 font-sans">
       <div className="w-full max-w-[550px] z-10">
         {/* Logo header */}
         <div className="text-center mb-8">
-          <div className="inline-flex bg-[#7C3AED] p-3 rounded-xl text-white shadow-[4px_4px_10px_rgba(163,169,183,0.3)] mb-4">
+          <div className="inline-flex bg-black p-3 rounded-xl text-white shadow-[4px_4px_10px_rgba(0,0,0,0.15)] mb-4">
             <span className="font-extrabold text-[18px] tracking-wider">DF</span>
           </div>
-          <h2 className="text-[28px] font-bold text-[#252A34] tracking-tight">Create your Account</h2>
-          <p className="text-[11px] text-[#687080] font-semibold tracking-wide uppercase mt-1">Every workday, perfectly aligned</p>
+          <h2 className="text-[28px] font-bold text-black tracking-tight">Create your Account</h2>
+          <p className="text-[11px] text-[#555555] font-semibold tracking-wide uppercase mt-1">Every workday, perfectly aligned</p>
         </div>
 
         {/* Auth Card */}
-        <div className="bg-[#EEF1F7] p-8 rounded-xl border border-[rgba(255,255,255,0.8)] shadow-[8px_8px_18px_rgba(163,169,183,0.28),-6px_-6px_14px_rgba(255,255,255,0.9)]">
+        <div className="bg-[#F0F0F0] p-8 rounded-xl border border-[rgba(255,255,255,0.8)] shadow-[8px_8px_18px_rgba(0,0,0,0.1),-6px_-6px_14px_rgba(255,255,255,0.9)]">
           
           {successMessage ? (
             <div className="text-center py-6">
-              <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-[#EEF1F7] border border-[rgba(255,255,255,0.8)] shadow-[inset_2px_2px_5px_rgba(163,169,183,0.18),inset_-2px_-2px_5px_rgba(255,255,255,0.75)] text-emerald-500 mb-4">
+              <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-[#F0F0F0] border border-[rgba(255,255,255,0.8)] shadow-[inset_2px_2px_5px_rgba(0,0,0,0.08),inset_-2px_-2px_5px_rgba(255,255,255,0.75)] text-black mb-4">
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h3 className="text-[18px] font-bold text-[#252A34] mb-2">Check Your Email</h3>
-              <p className="text-[12px] text-[#687080] leading-relaxed mb-6">
+              <h3 className="text-[18px] font-bold text-black mb-2">Check Your Email</h3>
+              <p className="text-[12px] text-[#555555] font-bold leading-relaxed mb-6">
                 {successMessage}
               </p>
               <div className="flex justify-center space-x-4">
                 <Link to="/signin">
-                  <button className="h-[42px] px-6 bg-[#EEF1F7] text-[#252A34] font-bold text-[13px] rounded-lg border border-[rgba(255,255,255,0.8)] shadow-[4px_4px_10px_rgba(163,169,183,0.28),-4px_-4px_10px_rgba(255,255,255,0.9)] hover:text-[#7C3AED] hover:shadow-[2px_2px_5px_rgba(163,169,183,0.28),-2px_-2px_5px_rgba(255,255,255,0.9)] active:shadow-[inset_2px_2px_5px_rgba(163,169,183,0.18),inset_-2px_-2px_5px_rgba(255,255,255,0.75)] active:border-transparent transition-all flex items-center justify-center">
+                  <button className="h-[42px] px-6 bg-[#F0F0F0] text-black font-bold text-[13px] rounded-lg border border-[rgba(255,255,255,0.8)] shadow-[4px_4px_10px_rgba(0,0,0,0.1),-4px_-4px_10px_rgba(255,255,255,0.9)] hover:shadow-[2px_2px_5px_rgba(0,0,0,0.1),-2px_-2px_5px_rgba(255,255,255,0.9)] active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.08),inset_-2px_-2px_5px_rgba(255,255,255,0.75)] active:border-transparent transition-all flex items-center justify-center">
                     Proceed to Login
                   </button>
                 </Link>
@@ -116,10 +116,10 @@ const SignUpPage = () => {
             </div>
           ) : (
             <>
-              <h3 className="text-[18px] font-bold text-[#252A34] mb-6 text-center">Employee Registration</h3>
+              <h3 className="text-[18px] font-bold text-black mb-6 text-center">Employee Registration</h3>
               
               {generalError && (
-                <div className="mb-6 p-4 rounded-xl bg-[#EEF1F7] border border-[rgba(255,255,255,0.8)] shadow-[inset_2px_2px_5px_rgba(163,169,183,0.18),inset_-2px_-2px_5px_rgba(255,255,255,0.75)] text-[12px] font-semibold text-rose-600 text-center">
+                <div className="mb-6 p-4 rounded-xl bg-[#F0F0F0] border border-[rgba(255,255,255,0.8)] shadow-[inset_2px_2px_5px_rgba(0,0,0,0.08),inset_-2px_-2px_5px_rgba(255,255,255,0.75)] text-[12px] font-bold text-black text-center">
                   {generalError}
                 </div>
               )}
@@ -129,12 +129,12 @@ const SignUpPage = () => {
                   <div className="flex flex-col space-y-1.5 w-full">
                     <label htmlFor="employeeId" className={labelClasses}>Employee ID</label>
                     <input id="employeeId" name="employeeId" placeholder="e.g. DF-EMP-05" value={formData.employeeId} onChange={handleChange} required className={inputClasses} />
-                    {errors.employeeId && <span className="text-[11px] text-rose-500 font-medium">{errors.employeeId}</span>}
+                    {errors.employeeId && <span className="text-[11px] text-black font-extrabold">{errors.employeeId}</span>}
                   </div>
                   <div className="flex flex-col space-y-1.5 w-full">
                     <label htmlFor="name" className={labelClasses}>Full Name</label>
                     <input id="name" name="name" placeholder="e.g. Robert Downey" value={formData.name} onChange={handleChange} required className={inputClasses} />
-                    {errors.name && <span className="text-[11px] text-rose-500 font-medium">{errors.name}</span>}
+                    {errors.name && <span className="text-[11px] text-black font-extrabold">{errors.name}</span>}
                   </div>
                 </div>
 
@@ -142,12 +142,12 @@ const SignUpPage = () => {
                   <div className="flex flex-col space-y-1.5 w-full">
                     <label htmlFor="email" className={labelClasses}>Email Address</label>
                     <input id="email" name="email" type="email" placeholder="name@company.com" value={formData.email} onChange={handleChange} required className={inputClasses} />
-                    {errors.email && <span className="text-[11px] text-rose-500 font-medium">{errors.email}</span>}
+                    {errors.email && <span className="text-[11px] text-black font-extrabold">{errors.email}</span>}
                   </div>
                   <div className="flex flex-col space-y-1.5 w-full">
                     <label htmlFor="password" className={labelClasses}>Password</label>
                     <input id="password" name="password" type="password" placeholder="••••••••" value={formData.password} onChange={handleChange} required className={inputClasses} />
-                    {errors.password && <span className="text-[11px] text-rose-500 font-medium">{errors.password}</span>}
+                    {errors.password && <span className="text-[11px] text-black font-extrabold">{errors.password}</span>}
                   </div>
                 </div>
 
@@ -156,16 +156,16 @@ const SignUpPage = () => {
                   <div className="grid grid-cols-2 gap-4">
                     <label className={`flex items-center justify-center h-[40px] rounded-md border text-[13px] font-bold cursor-pointer transition-all ${
                       formData.role === 'employee' 
-                        ? 'border-[#7C3AED]/40 bg-[#EEF1F7] text-[#7C3AED] shadow-[inset_2px_2px_5px_rgba(163,169,183,0.18),inset_-2px_-2px_5px_rgba(255,255,255,0.75)]' 
-                        : 'border-[rgba(255,255,255,0.8)] bg-[#EEF1F7] text-[#687080] shadow-[4px_4px_10px_rgba(163,169,183,0.28),-4px_-4px_10px_rgba(255,255,255,0.9)] hover:text-[#252A34]'
+                        ? 'border-black/40 bg-[#F0F0F0] text-black shadow-[inset_2px_2px_5px_rgba(0,0,0,0.08),inset_-2px_-2px_5px_rgba(255,255,255,0.75)]' 
+                        : 'border-[rgba(255,255,255,0.8)] bg-[#F0F0F0] text-[#555555] shadow-[4px_4px_10px_rgba(0,0,0,0.1),-4px_-4px_10px_rgba(255,255,255,0.9)] hover:text-black'
                     }`}>
                       <input type="radio" name="role" value="employee" checked={formData.role === 'employee'} onChange={handleChange} className="sr-only" />
                       Employee
                     </label>
                     <label className={`flex items-center justify-center h-[40px] rounded-md border text-[13px] font-bold cursor-pointer transition-all ${
                       formData.role === 'admin' 
-                        ? 'border-[#7C3AED]/40 bg-[#EEF1F7] text-[#7C3AED] shadow-[inset_2px_2px_5px_rgba(163,169,183,0.18),inset_-2px_-2px_5px_rgba(255,255,255,0.75)]' 
-                        : 'border-[rgba(255,255,255,0.8)] bg-[#EEF1F7] text-[#687080] shadow-[4px_4px_10px_rgba(163,169,183,0.28),-4px_-4px_10px_rgba(255,255,255,0.9)] hover:text-[#252A34]'
+                        ? 'border-black/40 bg-[#F0F0F0] text-black shadow-[inset_2px_2px_5px_rgba(0,0,0,0.08),inset_-2px_-2px_5px_rgba(255,255,255,0.75)]' 
+                        : 'border-[rgba(255,255,255,0.8)] bg-[#F0F0F0] text-[#555555] shadow-[4px_4px_10px_rgba(0,0,0,0.1),-4px_-4px_10px_rgba(255,255,255,0.9)] hover:text-black'
                     }`}>
                       <input type="radio" name="role" value="admin" checked={formData.role === 'admin'} onChange={handleChange} className="sr-only" />
                       HR / Admin
@@ -174,9 +174,9 @@ const SignUpPage = () => {
                 </div>
 
                 <div className="py-2">
-                  <div className="h-px bg-[#E9ECF4] shadow-[0px_1px_0px_rgba(255,255,255,1)] w-full my-2"></div>
+                  <div className="h-px bg-[#EBEBEB] shadow-[0px_1px_0px_rgba(255,255,255,1)] w-full my-2"></div>
                 </div>
-                <p className="text-[11px] font-bold text-[#687080] uppercase tracking-wider mb-2">Professional Details (Optional)</p>
+                <p className="text-[11px] font-bold text-[#555555] uppercase tracking-wider mb-2">Professional Details (Optional)</p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="flex flex-col space-y-1.5 w-full">
@@ -203,16 +203,16 @@ const SignUpPage = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full h-[42px] mt-6 bg-[#EEF1F7] text-[#252A34] font-bold text-[13px] rounded-lg border border-[rgba(255,255,255,0.8)] shadow-[4px_4px_10px_rgba(163,169,183,0.28),-4px_-4px_10px_rgba(255,255,255,0.9)] hover:text-[#7C3AED] hover:shadow-[2px_2px_5px_rgba(163,169,183,0.28),-2px_-2px_5px_rgba(255,255,255,0.9)] active:shadow-[inset_2px_2px_5px_rgba(163,169,183,0.18),inset_-2px_-2px_5px_rgba(255,255,255,0.75)] active:border-transparent transition-all flex items-center justify-center disabled:opacity-50"
+                  className="w-full h-[42px] mt-6 bg-[#F0F0F0] text-black font-bold text-[13px] rounded-lg border border-[rgba(255,255,255,0.8)] shadow-[4px_4px_10px_rgba(0,0,0,0.1),-4px_-4px_10px_rgba(255,255,255,0.9)] hover:shadow-[2px_2px_5px_rgba(0,0,0,0.1),-2px_-2px_5px_rgba(255,255,255,0.9)] active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.08),inset_-2px_-2px_5px_rgba(255,255,255,0.75)] active:border-transparent transition-all flex items-center justify-center disabled:opacity-50"
                 >
                   {loading ? 'Registering...' : 'Register Account'}
                 </button>
               </form>
 
               {/* Login redirection option */}
-              <div className="mt-8 text-center text-[12px] font-semibold text-[#687080]">
+              <div className="mt-8 text-center text-[12px] font-semibold text-[#555555]">
                 Already have an account?{' '}
-                <Link to="/signin" className="text-[#7C3AED] hover:text-[#6D28D9] transition-colors ml-1">
+                <Link to="/signin" className="text-black font-bold underline hover:text-[#555555] transition-colors ml-1">
                   Sign In
                 </Link>
               </div>
