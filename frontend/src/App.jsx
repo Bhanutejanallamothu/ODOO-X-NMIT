@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { UniversalBackground } from './components/ui/Background';
 
 // Pages
 import SignInPage from './pages/SignInPage';
@@ -67,83 +68,85 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
-          {/* Public Authentication Routes */}
-          <Route path="/signin" element={<SignInPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/verify-email" element={<VerifyEmailPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <UniversalBackground>
+          <Routes>
+            {/* Public Authentication Routes */}
+            <Route path="/signin" element={<SignInPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/verify-email" element={<VerifyEmailPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
 
-          {/* Protected Portal Routes */}
-          <Route 
-            path="/" 
-            element={
-              <ProtectedRoute>
-                <Layout />
-              </ProtectedRoute>
-            }
-          >
-            {/* Redirect root to dashboard */}
-            <Route index element={<Navigate to="/dashboard" replace />} />
-            
-            {/* Common dashboard switcher path */}
-            <Route path="dashboard" element={<DashboardSwitcher />} />
-            
-            {/* Common Profile path */}
-            <Route path="profile" element={<ProfilePage />} />
-            
-            {/* Employee Scope Portal paths */}
-            <Route path="attendance" element={<AttendancePage />} />
-            <Route path="leaves" element={<LeavePage />} />
-            <Route path="payroll" element={<PayrollPage />} />
-            
-            {/* Admin Scope Portal paths */}
+            {/* Protected Portal Routes */}
             <Route 
-              path="employees" 
+              path="/" 
               element={
-                <AdminRoute>
-                  <EmployeesPage />
-                </AdminRoute>
-              } 
-            />
-            <Route 
-              path="attendance-logs" 
-              element={
-                <AdminRoute>
-                  <AttendanceLogsPage />
-                </AdminRoute>
-              } 
-            />
-            <Route 
-              path="leave-requests" 
-              element={
-                <AdminRoute>
-                  <LeaveRequestsPage />
-                </AdminRoute>
-              } 
-            />
-            <Route 
-              path="payroll-sheet" 
-              element={
-                <AdminRoute>
-                  <PayrollSheetPage />
-                </AdminRoute>
-              } 
-            />
-            <Route 
-              path="audit-logs" 
-              element={
-                <AdminRoute>
-                  <AuditLogsPage />
-                </AdminRoute>
-              } 
-            />
-          </Route>
+                <ProtectedRoute>
+                  <Layout />
+                </ProtectedRoute>
+              }
+            >
+              {/* Redirect root to dashboard */}
+              <Route index element={<Navigate to="/dashboard" replace />} />
+              
+              {/* Common dashboard switcher path */}
+              <Route path="dashboard" element={<DashboardSwitcher />} />
+              
+              {/* Common Profile path */}
+              <Route path="profile" element={<ProfilePage />} />
+              
+              {/* Employee Scope Portal paths */}
+              <Route path="attendance" element={<AttendancePage />} />
+              <Route path="leaves" element={<LeavePage />} />
+              <Route path="payroll" element={<PayrollPage />} />
+              
+              {/* Admin Scope Portal paths */}
+              <Route 
+                path="employees" 
+                element={
+                  <AdminRoute>
+                    <EmployeesPage />
+                  </AdminRoute>
+                } 
+              />
+              <Route 
+                path="attendance-logs" 
+                element={
+                  <AdminRoute>
+                    <AttendanceLogsPage />
+                  </AdminRoute>
+                } 
+              />
+              <Route 
+                path="leave-requests" 
+                element={
+                  <AdminRoute>
+                    <LeaveRequestsPage />
+                  </AdminRoute>
+                } 
+              />
+              <Route 
+                path="payroll-sheet" 
+                element={
+                  <AdminRoute>
+                    <PayrollSheetPage />
+                  </AdminRoute>
+                } 
+              />
+              <Route 
+                path="audit-logs" 
+                element={
+                  <AdminRoute>
+                    <AuditLogsPage />
+                  </AdminRoute>
+                } 
+              />
+            </Route>
 
-          {/* Catch-all Redirect */}
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
+            {/* Catch-all Redirect */}
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+        </UniversalBackground>
       </AuthProvider>
     </BrowserRouter>
   );

@@ -58,7 +58,7 @@ const Layout = () => {
   }));
 
   return (
-    <div className="flex flex-col min-h-screen bg-paper-bg relative pt-4">
+    <div className="flex flex-col min-h-screen bg-transparent relative pt-4">
       {/* Header */}
       <header className="bg-paper-surface border-b border-paper-border flex items-center justify-between px-6 lg:px-8 py-3.5 z-10 sticky top-0">
         <div className="flex items-center space-x-4">
@@ -112,7 +112,7 @@ const Layout = () => {
       </header>
 
       {/* Mobile Top Nav */}
-      <div className="md:hidden flex justify-center w-full py-4 bg-paper-bg z-10 sticky top-[65px] border-b border-paper-border">
+      <div className="md:hidden flex justify-center w-full py-4 bg-transparent z-10 sticky top-[65px] border-b border-paper-border">
         <LimelightNav 
           items={navItems}
           defaultActiveIndex={activeIndex}
