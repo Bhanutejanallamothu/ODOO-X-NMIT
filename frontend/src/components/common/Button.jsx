@@ -1,38 +1,39 @@
 import React from 'react';
+import { buttonVariants } from '../ui/button';
+import { cn } from '../../lib/utils';
 
-const Button = ({
+const Button = React.forwardRef(({
   children,
-  variant = 'primary', // primary, secondary, outline, danger, success
-  size = 'md', // sm, md, lg
+  variant = 'primary', // mapping legacy variants to new ones
+  size = 'md',
   type = 'button',
   icon: Icon,
   disabled = false,
   loading = false,
   onClick,
   className = '',
-}) => {
-  const baseStyles = 'inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-200 outline-none focus:outline-none';
+  ...props
+}, ref) => {
+  // Map legacy variants to brutalist variants
+  let brutalistVariant = 'default';
+  if (variant === 'secondary' || variant === 'outline') brutalistVariant = 'neutral';
   
-  const variants = {
-    primary: 'bg-paper-surface border border-brand-300 text-brand-600 shadow-paper hover:bg-brand-50 hover:text-brand-700 active:shadow-paper-inset active:bg-brand-100',
-    secondary: 'bg-paper-surface border border-paper-border text-paper-text shadow-paper hover:bg-paper-raised active:shadow-paper-inset',
-    outline: 'bg-transparent border border-paper-border text-paper-text hover:bg-paper-surface',
-    danger: 'bg-paper-surface border border-rose-200 text-rose-600 shadow-paper hover:bg-rose-50 hover:text-rose-700 active:shadow-paper-inset active:bg-rose-100',
-    success: 'bg-paper-surface border border-emerald-200 text-emerald-600 shadow-paper hover:bg-emerald-50 hover:text-emerald-700 active:shadow-paper-inset active:bg-emerald-100',
-  };
+  // Custom text colors for danger/success
+  const extraClasses = variant === 'danger' ? 'text-rose-600' : (variant === 'success' ? 'text-emerald-600' : '');
 
-  const sizes = {
-    sm: 'px-3 py-1.5 text-xs',
-    md: 'px-4 py-2 text-[13px]',
-    lg: 'px-5 py-2.5 text-[14px]',
-  };
+  // Map sizes
+  let brutalistSize = 'default';
+  if (size === 'sm') brutalistSize = 'sm';
+  if (size === 'lg') brutalistSize = 'lg';
 
   return (
     <button
       type={type}
-      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
+      ref={ref}
+      className={cn(buttonVariants({ variant: brutalistVariant, size: brutalistSize }), extraClasses, className)}
       disabled={disabled || loading}
       onClick={onClick}
+      {...props}
     >
       {loading && (
         <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-current" fill="none" viewBox="0 0 24 24">
@@ -44,6 +45,7 @@ const Button = ({
       {children}
     </button>
   );
-};
+});
 
+Button.displayName = 'Button';
 export default Button;
