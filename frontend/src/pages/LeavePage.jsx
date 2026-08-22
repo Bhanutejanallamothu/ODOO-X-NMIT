@@ -192,7 +192,7 @@ const LeavePage = () => {
       {/* Leave Balance Stats Cards */}
       {balances && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-paper-surface p-5 rounded-[10px] border border-paper-border shadow-paper flex flex-col justify-between">
+          <div className="bg-paper-surface p-5 rounded-base border-2 border-border shadow-shadow transition-all duration-300 hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-4px] hover:translate-y-[-4px] flex flex-col justify-between">
             <div>
               <span className="text-[11px] font-bold text-paper-muted uppercase tracking-widest">Paid Leave Balance</span>
               <h3 className="text-3xl font-extrabold text-paper-text mt-2 tracking-tight">
@@ -205,7 +205,7 @@ const LeavePage = () => {
             </div>
           </div>
 
-          <div className="bg-paper-surface p-5 rounded-[10px] border border-paper-border shadow-paper flex flex-col justify-between">
+          <div className="bg-paper-surface p-5 rounded-base border-2 border-border shadow-shadow transition-all duration-300 hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-4px] hover:translate-y-[-4px] flex flex-col justify-between">
             <div>
               <span className="text-[11px] font-bold text-paper-muted uppercase tracking-widest">Sick Leave Balance</span>
               <h3 className="text-3xl font-extrabold text-paper-text mt-2 tracking-tight">
@@ -218,7 +218,7 @@ const LeavePage = () => {
             </div>
           </div>
 
-          <div className="bg-paper-surface p-5 rounded-[10px] border border-paper-border shadow-paper flex flex-col justify-between">
+          <div className="bg-paper-surface p-5 rounded-base border-2 border-border shadow-shadow transition-all duration-300 hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-4px] hover:translate-y-[-4px] flex flex-col justify-between">
             <div>
               <span className="text-[11px] font-bold text-paper-muted uppercase tracking-widest">Unpaid Leave Used</span>
               <h3 className="text-3xl font-extrabold text-paper-text mt-2 tracking-tight">

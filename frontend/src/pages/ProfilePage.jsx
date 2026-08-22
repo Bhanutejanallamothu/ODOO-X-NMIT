@@ -121,7 +121,7 @@ const ProfilePage = () => {
             
             {/* Header info */}
             <div className="flex items-center space-x-4">
-              <div className="h-[60px] w-[60px] rounded-[8px] bg-paper-surface border border-paper-border shadow-paper-inset flex items-center justify-center text-paper-text font-extrabold text-[22px]">
+              <div className="h-[60px] w-[60px] rounded-base bg-paper-surface border-2 border-border shadow-shadow flex items-center justify-center text-paper-text font-extrabold text-[22px] transition-all duration-300 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]">
                 {profile?.name ? profile.name.split(' ').map(n=>n[0]).join('').toUpperCase() : 'U'}
               </div>
               <div>

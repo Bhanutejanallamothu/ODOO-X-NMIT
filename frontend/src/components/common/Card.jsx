@@ -1,4 +1,5 @@
 import React from 'react';
+import { cn } from '../../lib/utils';
 
 const Card = ({
   children,
@@ -7,10 +8,10 @@ const Card = ({
   actions,
   className = '',
   bodyClassName = 'p-5 lg:p-6',
-  headerClassName = 'px-5 lg:px-6 py-4 border-b border-white/40',
+  headerClassName = 'px-5 lg:px-6 py-4 border-b-2 border-border',
 }) => {
   return (
-    <div className={`bg-paper-surface rounded-[10px] border border-paper-border shadow-paper overflow-hidden ${className}`}>
+    <div className={cn("bg-paper-surface rounded-base border-2 border-border shadow-shadow overflow-hidden transition-all duration-300 hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-4px] hover:translate-y-[-4px]", className)}>
       {(title || subtitle || actions) && (
         <div className={`flex items-center justify-between flex-wrap gap-4 ${headerClassName}`}>
           <div>

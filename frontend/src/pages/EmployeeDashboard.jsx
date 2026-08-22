@@ -197,13 +197,13 @@ const EmployeeDashboard = () => {
         {/* Quick KPI stats card */}
         <Card title="Quick Summary" className="h-full">
           <div className="grid grid-cols-2 gap-4">
-            <div className="p-4 bg-paper-bg rounded-[8px] border border-paper-border shadow-paper-inset">
+            <div className="p-4 bg-paper-bg border-2 border-border shadow-shadow rounded-base transition-all duration-300 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]">
               <span className="text-paper-muted text-[10px] font-bold uppercase tracking-wider">Salary (Aug)</span>
               <p className="text-[16px] font-extrabold text-paper-text mt-1">
                 {recentPayroll ? `$${parseFloat(recentPayroll.net_salary).toFixed(2)}` : 'N/A'}
               </p>
             </div>
-            <div className="p-4 bg-paper-bg rounded-[8px] border border-paper-border shadow-paper-inset">
+            <div className="p-4 bg-paper-bg border-2 border-border shadow-shadow rounded-base transition-all duration-300 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]">
               <span className="text-paper-muted text-[10px] font-bold uppercase tracking-wider">Job Role</span>
               <p className="text-[13px] font-extrabold text-paper-text truncate mt-1">
                 {user?.jobTitle || 'Unassigned'}
@@ -237,7 +237,7 @@ const EmployeeDashboard = () => {
                   leave.status === 'rejected' ? 'danger' : 'warning';
                 
                 return (
-                  <div key={leave.id} className="flex items-center justify-between p-3.5 bg-paper-bg border border-paper-border shadow-paper-sm rounded-[8px]">
+                  <div key={leave.id} className="flex items-center justify-between p-3.5 bg-paper-bg border-2 border-border shadow-shadow rounded-base transition-all duration-300 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]">
                     <div>
                       <h4 className="text-[13px] font-bold text-paper-text tracking-tight uppercase">{leave.leave_type} Leave</h4>
                       <p className="text-[11px] text-paper-muted mt-0.5">
@@ -273,7 +273,7 @@ const EmployeeDashboard = () => {
                   log.status === 'leave' ? 'info' : 'danger';
                 
                 return (
-                  <div key={log.id} className="flex items-center justify-between p-3.5 bg-paper-bg border border-paper-border shadow-paper-sm rounded-[8px]">
+                  <div key={log.id} className="flex items-center justify-between p-3.5 bg-paper-bg border-2 border-border shadow-shadow rounded-base transition-all duration-300 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]">
                     <div className="space-y-0.5">
                       <p className="text-[13px] font-bold text-paper-text">
                         {new Date(log.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
