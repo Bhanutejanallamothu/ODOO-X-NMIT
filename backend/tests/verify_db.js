@@ -5,13 +5,29 @@ const mysql = require('mysql2/promise');
 console.log('Testing MySQL connectivity for Dayflow HRMS...');
 console.log('Connection URL:', process.env.DATABASE_URL || 'Using default: mysql://root@localhost:3306/dayflow');
 
-const dbConfig = {
+let dbConfig = {
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || '',
   host: process.env.DB_HOST || 'localhost',
   port: process.env.DB_PORT || '3306',
   database: process.env.DB_NAME || 'dayflow'
 };
+
+const connectionString = process.env.DATABASE_URL;
+if (connectionString && connectionString.startsWith('mysql://')) {
+  try {
+    const url = new URL(connectionString);
+    dbConfig = {
+      user: url.username || dbConfig.user,
+      password: url.password !== undefined ? decodeURIComponent(url.password) : dbConfig.password,
+      host: url.hostname || dbConfig.host,
+      port: url.port || dbConfig.port,
+      database: url.pathname.slice(1) || dbConfig.database
+    };
+  } catch (e) {
+    console.error('Failed to parse DATABASE_URL:', e.message);
+  }
+}
 
 async function run() {
   let connection;

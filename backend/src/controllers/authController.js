@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const db = require('../config/db');
-const { sendVerificationEmail } = require('../services/emailService');
+const { sendVerificationEmail, sendPasswordResetEmail } = require('../services/emailService');
 
 const signUp = async (req, res, next) => {
   const { employeeId, email, password, role, name, phone, address, jobTitle, department } = req.body;
@@ -59,6 +59,7 @@ const signUp = async (req, res, next) => {
 
 const signIn = async (req, res, next) => {
   const { email, password } = req.body;
+  console.log(`[Auth] Sign-in attempt: ${email}`);
 
   try {
     // 1. Fetch user
@@ -67,7 +68,10 @@ const signIn = async (req, res, next) => {
       [email]
     );
 
+    console.log(`[Auth] Users found in database: ${userResult.rowCount}`);
+
     if (userResult.rowCount === 0) {
+      console.log(`[Auth] Login failed: User not found.`);
       return res.status(400).json({ success: false, message: 'Invalid credentials' });
     }
 
@@ -75,7 +79,10 @@ const signIn = async (req, res, next) => {
 
     // 2. Compare password
     const isMatch = await bcrypt.compare(password, user.password_hash);
+    console.log(`[Auth] Password comparison result: ${isMatch}`);
+
     if (!isMatch) {
+      console.log(`[Auth] Login failed: Password mismatch.`);
       return res.status(400).json({ success: false, message: 'Invalid credentials' });
     }
 
@@ -189,9 +196,81 @@ const getCurrentUser = async (req, res, next) => {
   }
 };
 
+const forgotPassword = async (req, res, next) => {
+  const { email } = req.body;
+
+  try {
+    const userResult = await db.query(
+      'SELECT id FROM users WHERE email = ?',
+      [email]
+    );
+
+    if (userResult.rowCount === 0) {
+      // For security, do not disclose if the email is registered
+      return res.status(200).json({
+        success: true,
+        message: 'If that email exists, a password reset link has been sent.'
+      });
+    }
+
+    const user = userResult.rows[0];
+    const resetToken = crypto.randomBytes(20).toString('hex');
+    const resetTokenExpires = new Date(Date.now() + 3600000); // 1 hour
+
+    await db.query(
+      'UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE id = ?',
+      [resetToken, resetTokenExpires, user.id]
+    );
+
+    await sendPasswordResetEmail(email, resetToken);
+
+    res.status(200).json({
+      success: true,
+      message: 'If that email exists, a password reset link has been sent.'
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const resetPassword = async (req, res, next) => {
+  const { token, password } = req.body;
+
+  try {
+    const userResult = await db.query(
+      'SELECT id FROM users WHERE reset_token = ? AND reset_token_expires > CURRENT_TIMESTAMP',
+      [token]
+    );
+
+    if (userResult.rowCount === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password reset token is invalid or has expired.'
+      });
+    }
+
+    const user = userResult.rows[0];
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    await db.query(
+      'UPDATE users SET password_hash = ?, reset_token = NULL, reset_token_expires = NULL WHERE id = ?',
+      [passwordHash, user.id]
+    );
+
+    res.status(200).json({
+      success: true,
+      message: 'Your password has been successfully reset.'
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   signUp,
   signIn,
   verifyEmail,
-  getCurrentUser
+  getCurrentUser,
+  forgotPassword,
+  resetPassword
 };

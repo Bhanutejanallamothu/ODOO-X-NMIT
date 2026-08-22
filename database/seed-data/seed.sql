@@ -2,6 +2,8 @@
 
 -- Clear existing data
 SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE audit_logs;
+TRUNCATE TABLE leave_balances;
 TRUNCATE TABLE payrolls;
 TRUNCATE TABLE leaves;
 TRUNCATE TABLE attendance;
@@ -9,11 +11,11 @@ TRUNCATE TABLE profiles;
 TRUNCATE TABLE users;
 SET FOREIGN_KEY_CHECKS = 1;
 
--- Insert Users (Password is 'password123' bcrypt hashed with 10 rounds: '$2b$10$vM6QfO2c5E5nQOspzBfNbeL2eD1hRkL6n0VrnM7fF3e7N1JEuF93G')
+-- Insert Users (Password is 'password123' bcrypt hashed with 10 rounds: '$2a$10$O50GMlkfiby/laoKPjUfMO47DeyaoxCT8V/swqw4ajvPE/viga5gC')
 INSERT INTO users (id, employee_id, email, password_hash, role, is_verified, verification_token) VALUES
-(1, 'DF-ADMIN-01', 'admin@dayflow.com', '$2b$10$vM6QfO2c5E5nQOspzBfNbeL2eD1hRkL6n0VrnM7fF3e7N1JEuF93G', 'admin', TRUE, NULL),
-(2, 'DF-EMP-01', 'john.doe@dayflow.com', '$2b$10$vM6QfO2c5E5nQOspzBfNbeL2eD1hRkL6n0VrnM7fF3e7N1JEuF93G', 'employee', TRUE, NULL),
-(3, 'DF-EMP-02', 'jane.smith@dayflow.com', '$2b$10$vM6QfO2c5E5nQOspzBfNbeL2eD1hRkL6n0VrnM7fF3e7N1JEuF93G', 'employee', TRUE, NULL);
+(1, 'DF-ADMIN-01', 'admin@dayflow.com', '$2a$10$O50GMlkfiby/laoKPjUfMO47DeyaoxCT8V/swqw4ajvPE/viga5gC', 'admin', TRUE, NULL),
+(2, 'DF-EMP-01', 'john.doe@dayflow.com', '$2a$10$O50GMlkfiby/laoKPjUfMO47DeyaoxCT8V/swqw4ajvPE/viga5gC', 'employee', TRUE, NULL),
+(3, 'DF-EMP-02', 'jane.smith@dayflow.com', '$2a$10$O50GMlkfiby/laoKPjUfMO47DeyaoxCT8V/swqw4ajvPE/viga5gC', 'employee', TRUE, NULL);
 
 -- Reset Serial sequence for users table
 ALTER TABLE users AUTO_INCREMENT = 4;
@@ -26,6 +28,12 @@ INSERT INTO profiles (user_id, name, phone, address, job_title, department, prof
 
 -- Reset Serial sequence for profiles table
 ALTER TABLE profiles AUTO_INCREMENT = 4;
+
+-- Insert Default Leave Balances
+INSERT INTO leave_balances (user_id, paid_accrued, paid_used, sick_accrued, sick_used, unpaid_used) VALUES
+(1, 15, 0, 10, 0, 0),
+(2, 15, 2, 10, 1, 0),
+(3, 15, 0, 10, 0, 0);
 
 -- Insert Attendance Records
 INSERT INTO attendance (user_id, date, check_in, check_out, status) VALUES

@@ -153,12 +153,12 @@ const getAllAttendance = async (req, res, next) => {
     const clauses = [];
 
     if (date) {
-      clauses.push(`a.date = $${params.length + 1}`);
+      clauses.push('a.date = ?');
       params.push(date);
     }
 
     if (userId) {
-      clauses.push(`a.user_id = $${params.length + 1}`);
+      clauses.push('a.user_id = ?');
       params.push(userId);
     }
 

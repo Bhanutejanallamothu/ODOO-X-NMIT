@@ -121,8 +121,33 @@ The database seeds with three default users (Password for all accounts is: `pass
 
 ## ⚡ Key Workflows to Test
 
-1. **Register New Employee:** Go to `/signup`, register a new user, check the backend terminal logs for the mock verification link, paste the link in your browser, and verify your account before logging in.
+1. **Forgot Password:** Go to `/signin`, click **Forgot Password?**. Submit your email. Check your backend console logs for the reset link:
+   `[EMAIL SERVICE] Link: http://localhost:5173/reset-password?token=...`
+   Open it, reset your password, and sign in.
 2. **Clock In & Out:** Log in as `john.doe@dayflow.com`, click **Clock In** on the dashboard. Click **Clock Out** later to complete your session.
-3. **Submit Leave:** Apply for leaves (e.g., Sick leave) from `/leaves`.
-4. **Approve Leave & Sync Attendance:** Log in as `admin@dayflow.com`. Go to **Leave Requests**, click **Action** to approve the request with admin comments. Go to **Attendance Logs** or the employee's portal to see that those dates have been automatically filled with the **Leave** status.
-5. **Update Salary Slip:** From **Payroll Sheet** on the admin portal, click the edit button to adjust base salaries, allowances, or deductions. View the formatted, printable receipt slip.
+3. **Submit Leave & Enforce Balances:** Apply for leaves from `/leaves`. View your available balances (Paid/Sick). Note that the form will block submission if you request more days than your remaining balance.
+4. **Approve Leave & Sync Attendance:** Log in as `admin@dayflow.com`. Go to **Leave Requests**, approve the request. Go to **Attendance Logs** to verify the days are marked as `leave` and check **Audit Logs** to see the logged admin transaction.
+5. **Update Salary Slip:** From **Payroll Sheet** on the admin portal, click edit to adjust payroll metrics. Verify the action is logged in **Audit Logs**.
+
+---
+
+## 🧪 Committed E2E Automated Tests
+
+We have checked Playwright automated end-to-end spec tests into the repo to facilitate reproducible verification.
+
+### Run Tests Locally:
+1. Make sure your local Dayflow development servers are running (`node run.js`).
+2. Run the following commands in a new terminal window:
+   ```powershell
+   cd frontend
+   npm install -D @playwright/test
+   npx playwright install chromium
+   npm run test:e2e
+   ```
+3. Playwright will launch chromium in headless mode and execute all employee and admin verification flows sequentially, testing clocking, leaves, profiles, payrolls, and audit logs.
+
+---
+
+## ⚙️ Session Architecture & Limitations
+- **JWT Authentication:** Dayflow implements stateless session management using a 24-hour JSON Web Token (JWT) stored in client `localStorage`.
+- **Known Limitations:** For this prototype/hackathon scope, there is no server-side token blacklisting (Redis revoke list) or refresh token rotation mechanism. Logging out simply discards the token from client storage. Production applications should integrate HTTP-only cookies, token blacklisting, and a short token expiration (e.g. 15 minutes) with refresh tokens.

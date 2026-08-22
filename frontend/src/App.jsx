@@ -6,6 +6,8 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import SignInPage from './pages/SignInPage';
 import SignUpPage from './pages/SignUpPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import EmployeeDashboard from './pages/EmployeeDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import ProfilePage from './pages/ProfilePage';
@@ -16,6 +18,7 @@ import LeaveRequestsPage from './pages/LeaveRequestsPage';
 import PayrollPage from './pages/PayrollPage';
 import PayrollSheetPage from './pages/PayrollSheetPage';
 import EmployeesPage from './pages/EmployeesPage';
+import AuditLogsPage from './pages/AuditLogsPage';
 
 // Components
 import Layout from './components/dashboard/Layout';
@@ -69,6 +72,8 @@ function App() {
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/verify-email" element={<VerifyEmailPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
 
           {/* Protected Portal Routes */}
           <Route 
@@ -123,6 +128,14 @@ function App() {
               element={
                 <AdminRoute>
                   <PayrollSheetPage />
+                </AdminRoute>
+              } 
+            />
+            <Route 
+              path="audit-logs" 
+              element={
+                <AdminRoute>
+                  <AuditLogsPage />
                 </AdminRoute>
               } 
             />

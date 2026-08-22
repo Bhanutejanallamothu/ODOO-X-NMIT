@@ -10,6 +10,7 @@ import { Calendar, Plus, AlertCircle, CheckCircle } from 'lucide-react';
 
 const LeavePage = () => {
   const [leaves, setLeaves] = useState([]);
+  const [balances, setBalances] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -23,6 +24,17 @@ const LeavePage = () => {
     endDate: '',
     remarks: ''
   });
+
+  const fetchBalances = async () => {
+    try {
+      const res = await api.get('/leaves/balances');
+      if (res.data.success) {
+        setBalances(res.data.balances);
+      }
+    } catch (err) {
+      console.error('Error fetching leave balances:', err);
+    }
+  };
 
   const fetchLeaves = async () => {
     try {
@@ -42,6 +54,7 @@ const LeavePage = () => {
 
   useEffect(() => {
     fetchLeaves();
+    fetchBalances();
   }, []);
 
   const openApplyModal = () => {
@@ -60,8 +73,33 @@ const LeavePage = () => {
     setFormFields(prev => ({ ...prev, [name]: value }));
   };
 
+  const getRequestedDays = () => {
+    if (!formFields.startDate || !formFields.endDate) return 0;
+    const start = new Date(formFields.startDate);
+    const end = new Date(formFields.endDate);
+    if (start > end) return 0;
+    const diffTime = Math.abs(end - start);
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+  };
+
+  const getAvailableDays = () => {
+    if (!balances) return 0;
+    if (formFields.leaveType === 'paid') return balances.paid_accrued - balances.paid_used;
+    if (formFields.leaveType === 'sick') return balances.sick_accrued - balances.sick_used;
+    return Infinity;
+  };
+
+  const requestedDays = getRequestedDays();
+  const availableDays = getAvailableDays();
+  const isBalanceExceeded = (formFields.leaveType === 'paid' || formFields.leaveType === 'sick') && requestedDays > availableDays;
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    if (isBalanceExceeded) {
+      setError('Insufficient leave balance.');
+      return;
+    }
+
     setModalLoading(true);
     setError('');
     setSuccess('');
@@ -79,6 +117,7 @@ const LeavePage = () => {
         setSuccess('Leave request submitted successfully.');
         setModalOpen(false);
         fetchLeaves();
+        fetchBalances();
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to submit leave request.');
@@ -150,6 +189,49 @@ const LeavePage = () => {
         </div>
       )}
 
+      {/* Leave Balance Stats Cards */}
+      {balances && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col justify-between">
+            <div>
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Paid Leave Balance</span>
+              <h3 className="text-3xl font-extrabold text-slate-800 mt-2">
+                {balances.paid_accrued - balances.paid_used} <span className="text-xs text-slate-500 font-medium">days left</span>
+              </h3>
+            </div>
+            <div className="flex justify-between items-center text-xs text-slate-500 font-medium mt-4 pt-3 border-t border-slate-50">
+              <span>Accrued: {balances.paid_accrued}d</span>
+              <span>Used: {balances.paid_used}d</span>
+            </div>
+          </div>
+
+          <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col justify-between">
+            <div>
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Sick Leave Balance</span>
+              <h3 className="text-3xl font-extrabold text-slate-800 mt-2">
+                {balances.sick_accrued - balances.sick_used} <span className="text-xs text-slate-500 font-medium">days left</span>
+              </h3>
+            </div>
+            <div className="flex justify-between items-center text-xs text-slate-500 font-medium mt-4 pt-3 border-t border-slate-50">
+              <span>Accrued: {balances.sick_accrued}d</span>
+              <span>Used: {balances.sick_used}d</span>
+            </div>
+          </div>
+
+          <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col justify-between">
+            <div>
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Unpaid Leave Used</span>
+              <h3 className="text-3xl font-extrabold text-slate-800 mt-2">
+                {balances.unpaid_used} <span className="text-xs text-slate-500 font-medium">days taken</span>
+              </h3>
+            </div>
+            <div className="text-xs text-slate-400 font-semibold mt-4 pt-3 border-t border-slate-50">
+              No maximum limit
+            </div>
+          </div>
+        </div>
+      )}
+
       <Card 
         title="Leave & Time-Off History" 
         subtitle="Manage your leave logs"
@@ -175,7 +257,7 @@ const LeavePage = () => {
         footer={
           <div className="flex space-x-2">
             <Button variant="outline" onClick={() => setModalOpen(false)}>Cancel</Button>
-            <Button variant="primary" onClick={handleFormSubmit} loading={modalLoading}>
+            <Button variant="primary" onClick={handleFormSubmit} loading={modalLoading} disabled={isBalanceExceeded}>
               Submit Request
             </Button>
           </div>
@@ -224,6 +306,21 @@ const LeavePage = () => {
             value={formFields.remarks}
             onChange={handleFormChange}
           />
+
+          {/* Duration display and validation warning */}
+          {requestedDays > 0 && (
+            <div className={`p-3 rounded-lg flex items-center space-x-2 text-xs font-semibold ${
+              isBalanceExceeded ? 'bg-amber-50 border border-amber-200 text-amber-700' : 'bg-slate-50 border border-slate-100 text-slate-600'
+            }`}>
+              <AlertCircle className="h-4 w-4 shrink-0" />
+              <span>
+                {isBalanceExceeded 
+                  ? `Insufficient balance! Requested duration: ${requestedDays} days, Available: ${availableDays} days.`
+                  : `Total requested duration: ${requestedDays} days.`
+                }
+              </span>
+            </div>
+          )}
 
         </form>
       </Modal>

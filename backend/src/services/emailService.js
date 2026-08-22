@@ -104,7 +104,51 @@ const sendLeaveStatusEmail = async (email, employeeName, leaveType, status, comm
   }
 };
 
+const sendPasswordResetEmail = async (email, token) => {
+  const transporter = createTransporter();
+  const resetLink = `http://localhost:5173/reset-password?token=${token}`;
+
+  console.log('-----------------------------------------');
+  console.log(`[EMAIL SERVICE] Password Reset email for: ${email}`);
+  console.log(`[EMAIL SERVICE] Link: ${resetLink}`);
+  console.log('-----------------------------------------');
+
+  if (!transporter) {
+    console.log('[EMAIL SERVICE] SMTP is not configured. Outputting link to console.');
+    return true;
+  }
+
+  try {
+    const info = await transporter.sendMail({
+      from: '"Dayflow HRMS" <no-reply@dayflow.com>',
+      to: email,
+      subject: 'Reset your Dayflow HRMS Password',
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
+          <h2 style="color: #4f46e5; text-align: center;">Reset Your Password</h2>
+          <p>Hi there,</p>
+          <p>We received a request to reset your password for your Dayflow HRMS account. Click the button below to choose a new password (valid for 1 hour):</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${resetLink}" style="background-color: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Reset Password</a>
+          </div>
+          <p>Or copy and paste this link in your browser:</p>
+          <p style="word-break: break-all; color: #718096;">${resetLink}</p>
+          <p>If you did not request a password reset, you can safely ignore this email.</p>
+          <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
+          <p style="font-size: 12px; color: #a0aec0; text-align: center;">Every workday, perfectly aligned. Dayflow HRMS.</p>
+        </div>
+      `,
+    });
+    console.log('[EMAIL SERVICE] Sent password reset email:', info.messageId);
+    return true;
+  } catch (error) {
+    console.error('[EMAIL SERVICE] Failed to send password reset email via SMTP:', error);
+    return false;
+  }
+};
+
 module.exports = {
   sendVerificationEmail,
-  sendLeaveStatusEmail
+  sendLeaveStatusEmail,
+  sendPasswordResetEmail
 };

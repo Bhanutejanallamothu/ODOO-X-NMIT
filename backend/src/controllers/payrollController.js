@@ -1,5 +1,6 @@
 const db = require('../config/db');
 const { generateSalarySlipText } = require('../services/reportService');
+const { logAdminAction } = require('../services/auditService');
 
 const getMyPayroll = async (req, res, next) => {
   try {
@@ -50,7 +51,7 @@ const upsertPayroll = async (req, res, next) => {
          SET base_salary = ?, deductions = ?, allowances = ?, net_salary = ? 
          WHERE user_id = ? AND month = ? AND year = ? 
          `,
-        [base, ded, alw, net, userId, month, year]
+         [base, ded, alw, net, userId, month, year]
       );
     } else {
       result = await db.query(
@@ -60,6 +61,14 @@ const upsertPayroll = async (req, res, next) => {
         [userId, base, ded, alw, net, month, year]
       );
     }
+
+    // Write admin audit log
+    await logAdminAction(
+      req.user.id,
+      checkResult.rowCount > 0 ? 'UPDATE_PAYROLL' : 'CREATE_PAYROLL',
+      { employeeId: userId, month, year, baseSalary: base, allowances: alw, deductions: ded, netSalary: net },
+      req
+    );
 
     res.status(200).json({
       success: true,

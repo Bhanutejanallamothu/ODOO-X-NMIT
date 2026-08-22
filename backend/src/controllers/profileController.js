@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const { logAdminAction } = require('../services/auditService');
 
 const getMyProfile = async (req, res, next) => {
   try {
@@ -99,6 +100,14 @@ const updateEmployeeProfile = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Profile not found' });
     }
 
+    // Write admin audit log
+    await logAdminAction(
+      req.user.id,
+      'UPDATE_PROFILE',
+      { targetUserId: userId, name, jobTitle, department },
+      req
+    );
+
     const updatedProfile = await db.query('SELECT * FROM profiles WHERE user_id = ?', [userId]);
 
     res.status(200).json({
@@ -126,10 +135,26 @@ const getAllEmployees = async (req, res, next) => {
   }
 };
 
+const getAuditLogs = async (req, res, next) => {
+  try {
+    const result = await db.query(
+      `SELECT a.*, p.name AS admin_name, u.employee_id AS admin_employee_id
+       FROM audit_logs a
+       JOIN users u ON a.user_id = u.id
+       JOIN profiles p ON u.id = p.user_id
+       ORDER BY a.created_at DESC`
+    );
+    res.status(200).json({ success: true, logs: result.rows });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   getMyProfile,
   getEmployeeProfile,
   updateMyProfile,
   updateEmployeeProfile,
-  getAllEmployees
+  getAllEmployees,
+  getAuditLogs
 };

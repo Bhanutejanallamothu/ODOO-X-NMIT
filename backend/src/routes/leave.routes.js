@@ -1,5 +1,5 @@
 const express = require('express');
-const { applyLeave, getMyLeaves, getAllLeaves, updateLeaveStatus } = require('../controllers/leaveController');
+const { applyLeave, getMyLeaves, getAllLeaves, updateLeaveStatus, getLeaveBalances } = require('../controllers/leaveController');
 const authMiddleware = require('../middleware/authMiddleware');
 const { isAdmin } = require('../middleware/roleMiddleware');
 
@@ -9,6 +9,7 @@ router.use(authMiddleware);
 
 router.post('/apply', applyLeave);
 router.get('/me', getMyLeaves);
+router.get('/balances', getLeaveBalances);
 
 // Admin-only endpoints
 router.get('/all', isAdmin, getAllLeaves);

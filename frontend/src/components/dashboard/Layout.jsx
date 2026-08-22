@@ -12,7 +12,8 @@ import {
   CalendarCheck, 
   Menu, 
   X,
-  Bell
+  Bell,
+  Shield
 } from 'lucide-react';
 import Badge from '../common/Badge';
 
@@ -40,6 +41,7 @@ const Layout = () => {
     { name: 'Attendance Logs', path: '/attendance-logs', icon: CalendarDays },
     { name: 'Leave Requests', path: '/leave-requests', icon: CalendarCheck },
     { name: 'Payroll Sheet', path: '/payroll-sheet', icon: FileSpreadsheet },
+    { name: 'Audit Logs', path: '/audit-logs', icon: Shield },
   ];
 
   const links = user?.role === 'admin' ? adminLinks : employeeLinks;

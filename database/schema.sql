@@ -8,6 +8,8 @@ CREATE TABLE IF NOT EXISTS users (
     role ENUM('admin', 'employee') NOT NULL DEFAULT 'employee',
     is_verified BOOLEAN NOT NULL DEFAULT FALSE,
     verification_token VARCHAR(255),
+    reset_token VARCHAR(255) NULL,
+    reset_token_expires TIMESTAMP NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -62,5 +64,25 @@ CREATE TABLE IF NOT EXISTS payrolls (
     year INT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT unique_user_month_year UNIQUE (user_id, month, year),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS leave_balances (
+    user_id INT PRIMARY KEY,
+    paid_accrued INT NOT NULL DEFAULT 15,
+    paid_used INT NOT NULL DEFAULT 0,
+    sick_accrued INT NOT NULL DEFAULT 10,
+    sick_used INT NOT NULL DEFAULT 0,
+    unpaid_used INT NOT NULL DEFAULT 0,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS audit_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    action VARCHAR(255) NOT NULL,
+    details TEXT,
+    ip_address VARCHAR(45),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

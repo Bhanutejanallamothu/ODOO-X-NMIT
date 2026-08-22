@@ -1,5 +1,5 @@
 const express = require('express');
-const { getMyProfile, getEmployeeProfile, updateMyProfile, updateEmployeeProfile, getAllEmployees } = require('../controllers/profileController');
+const { getMyProfile, getEmployeeProfile, updateMyProfile, updateEmployeeProfile, getAllEmployees, getAuditLogs } = require('../controllers/profileController');
 const authMiddleware = require('../middleware/authMiddleware');
 const { isAdmin } = require('../middleware/roleMiddleware');
 
@@ -10,6 +10,9 @@ router.use(authMiddleware);
 
 // Employee list (Admin only)
 router.get('/employees', isAdmin, getAllEmployees);
+
+// Audit logs (Admin only)
+router.get('/audit-logs', isAdmin, getAuditLogs);
 
 // Self-profile routes
 router.get('/me', getMyProfile);

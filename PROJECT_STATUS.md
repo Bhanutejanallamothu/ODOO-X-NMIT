@@ -3,7 +3,7 @@
 ## 📊 Project Completion Summary
 * **Status:** **Completed (Production-Ready Prototype)**
 * **Branch:** `main` (Successfully merged, resolved conflicts, and tracked with `origin/main`)
-* **Frameworks:** React (Vite) + Tailwind CSS v3 / Node.js + Express / PostgreSQL
+* **Frameworks:** React (Vite) + Tailwind CSS v3 / Node.js + Express / MySQL (mysql2)
 
 ---
 
@@ -11,8 +11,10 @@
 
 ### 1. Authentication & Authorization
 - **Sign Up:** Enforces password policies, checks database for duplicate Employee IDs/Emails, automatically registers a base user profile, and triggers a mock activation token.
-- **Sign In:** Leverages bcrypt comparison, returns JWT access tokens valid for 24 hours, and returns profile settings based on user role.
+- **Sign In:** Leverages bcrypt comparison, returns JWT access tokens valid for 24 hours, and returns profile settings based on user role. Includes a neumorphic **View Password (Eye/Eye-Off toggle)** icon.
+- **Forgot Password Flow:** Secure recovery flow. Generates a random cryptographic token, sets a 1-hour expiration, prints a recovery URL in the console, and provides UI forms to type and reset to a new password.
 - **Email Verification page:** Receives token parameters from query URL to verify and unlock account access.
+- **Database Engine Support:** Decodes and parses MySQL configurations dynamically from `DATABASE_URL` or environment variables, facilitating seamless local setup.
 
 ### 2. Dashboard Hub (Role-Aware)
 - **Employee View:** Displays real-time Clock-In/Out controls, current shift state, leave request summaries, latest salary slip data, and a historical weekly attendance widget.
@@ -28,12 +30,16 @@
 
 ### 5. Leave & Time-Off Management
 - **Application:** Form inputs for leave types (Paid, Sick, Unpaid), start/end dates, and remarks.
-- **HR Approval Portal:** Review details, append admin review comments, and approve/reject.
+- **Leave Balance tracking:** Enforces strict accrual quotas (Paid: 15 days, Sick: 10 days) per user. Shows remaining/used cards, warns on exceeding balances, and locks request submissions.
+- **HR Approval Portal:** Review details, append admin review comments, and approve/reject. Deducts approved duration days from the employee's leave balance in the database.
 - **⚡ Leave-Attendance Automation:** Approving a leave request automatically populates corresponding date entries with the "leave" status inside the attendance logs database.
 
 ### 6. Payroll & Earnings
 - **Admin Control Sheet:** Generate and update salary structures (Base Salary, Allowances, Deductions) for any employee and month/year.
 - **Employee Payslips:** View payslip list, pop open formatted monospace salary slips, copy text slips to the clipboard, or generate clean print preview screens.
+
+### 7. Security compliance & Audit Trails
+- **Admin Audit Trail Ledger:** Admin-only UI ledger showing system transaction logs (Approve/Reject leaves, Create/Update payroll, edit profile fields) with timestamp, administrator name, action type, changes payload, and client IP address.
 
 ---
 
@@ -57,3 +63,17 @@ The database seeds with three default users (Password for all accounts: `passwor
 3. **Standard Employee (Jane):**
    - **Email:** `jane.smith@dayflow.com`
    - **Employee ID:** `DF-EMP-02`
+
+---
+
+## 🎭 Verification & Testing Status
+An automated browser subagent executed a full workflow test suite against the live development servers, validating both roles with zero failures. Furthermore, E2E reproducible test scripts have been checked into the repository using **Playwright**:
+- **Employee Flow:** Verified Sign-In, real-time Clock-In/Out updates, applying for Leave (enforcing balance limits), editing profile details, and viewing formatted payslips.
+- **Admin Flow:** Verified Sign-In, leave application review/approval with comments, loading attendance logs, modifying employee payroll earnings, and reviewing the audit trail ledger.
+- **Security & Integrity:** Standardized password hashing on `$2a$` for cross-platform compatibility with pure JavaScript libraries.
+
+---
+
+## ⚙️ Session Architecture & Limitations
+- **JWT Authentication:** Dayflow implements stateless session management using a 24-hour JSON Web Token (JWT) stored in client `localStorage`.
+- **Known Limitations:** For this prototype/hackathon scope, there is no server-side token blacklisting (Redis revoke list) or refresh token rotation mechanism. Logging out simply discards the token from client storage. Production applications should integrate HTTP-only cookies, token blacklisting, and a short token expiration (e.g. 15 minutes) with refresh tokens.

@@ -1,5 +1,6 @@
 const db = require('../config/db');
 const { sendLeaveStatusEmail } = require('../services/emailService');
+const { logAdminAction } = require('../services/auditService');
 
 const applyLeave = async (req, res, next) => {
   const { leaveType, startDate, endDate, remarks } = req.body;
@@ -13,6 +14,39 @@ const applyLeave = async (req, res, next) => {
         success: false,
         message: 'Start date cannot be after the end date.'
       });
+    }
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const diffTime = Math.abs(end - start);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+    // Retrieve active leave balances
+    const balResult = await db.query('SELECT * FROM leave_balances WHERE user_id = ?', [userId]);
+    let balances = { paid_accrued: 15, paid_used: 0, sick_accrued: 10, sick_used: 0, unpaid_used: 0 };
+    if (balResult.rowCount > 0) {
+      balances = balResult.rows[0];
+    } else {
+      await db.query('INSERT INTO leave_balances (user_id) VALUES (?)', [userId]);
+    }
+
+    // Verify limit boundaries
+    if (leaveType === 'paid') {
+      const remaining = balances.paid_accrued - balances.paid_used;
+      if (diffDays > remaining) {
+        return res.status(400).json({
+          success: false,
+          message: `Insufficient paid leave balance. Requested: ${diffDays} days, Remaining: ${remaining} days.`
+        });
+      }
+    } else if (leaveType === 'sick') {
+      const remaining = balances.sick_accrued - balances.sick_used;
+      if (diffDays > remaining) {
+        return res.status(400).json({
+          success: false,
+          message: `Insufficient sick leave balance. Requested: ${diffDays} days, Remaining: ${remaining} days.`
+        });
+      }
     }
 
     const result = await db.query(
@@ -94,10 +128,23 @@ const updateLeaveStatus = async (req, res, next) => {
     );
 
     // 3. If approved, automatically insert/update attendance logs for the date range
+    const start = new Date(leave.start_date);
+    const end = new Date(leave.end_date);
+    const diffTime = Math.abs(end - start);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+    // Only adjust balance if transitioning from 'pending' to 'approved'
+    if (leave.status === 'pending' && status === 'approved') {
+      if (leave.leave_type === 'paid') {
+        await db.query('UPDATE leave_balances SET paid_used = paid_used + ? WHERE user_id = ?', [diffDays, leave.user_id]);
+      } else if (leave.leave_type === 'sick') {
+        await db.query('UPDATE leave_balances SET sick_used = sick_used + ? WHERE user_id = ?', [diffDays, leave.user_id]);
+      } else if (leave.leave_type === 'unpaid') {
+        await db.query('UPDATE leave_balances SET unpaid_used = unpaid_used + ? WHERE user_id = ?', [diffDays, leave.user_id]);
+      }
+    }
+
     if (status === 'approved') {
-      const start = new Date(leave.start_date);
-      const end = new Date(leave.end_date);
-      
       const currentDate = new Date(start);
       while (currentDate <= end) {
         // Format to YYYY-MM-DD
@@ -132,6 +179,14 @@ const updateLeaveStatus = async (req, res, next) => {
       }
     }
 
+    // Write admin audit log
+    await logAdminAction(
+      req.user.id,
+      status === 'approved' ? 'APPROVE_LEAVE' : 'REJECT_LEAVE',
+      { leaveId, employeeId: leave.user_id, employeeName: leave.name, leaveType: leave.leave_type, days: diffDays, adminComments },
+      req
+    );
+
     // 4. Send confirmation email
     await sendLeaveStatusEmail(leave.email, leave.name, leave.leave_type, status, adminComments);
 
@@ -145,9 +200,31 @@ const updateLeaveStatus = async (req, res, next) => {
   }
 };
 
+const getLeaveBalances = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const result = await db.query(
+      'SELECT * FROM leave_balances WHERE user_id = ?',
+      [userId]
+    );
+
+    let balances = { user_id: userId, paid_accrued: 15, paid_used: 0, sick_accrued: 10, sick_used: 0, unpaid_used: 0 };
+    if (result.rowCount > 0) {
+      balances = result.rows[0];
+    } else {
+      await db.query('INSERT INTO leave_balances (user_id) VALUES (?)', [userId]);
+    }
+
+    res.status(200).json({ success: true, balances });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   applyLeave,
   getMyLeaves,
   getAllLeaves,
-  updateLeaveStatus
+  updateLeaveStatus,
+  getLeaveBalances
 };
