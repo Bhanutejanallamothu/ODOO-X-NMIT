@@ -70,23 +70,6 @@ const Layout = () => {
               Dayflow
             </h1>
             <p className="text-[10px] text-paper-muted font-bold tracking-widest uppercase">HRMS</p>
-        {/* User Card */}
-        <div className="px-6 py-5 border-b border-slate-100 flex items-center space-x-3 bg-slate-50/50">
-          {user?.profilePicture ? (
-            <img src={user.profilePicture} alt="Profile" className="h-10 w-10 rounded-full object-cover shrink-0 border border-slate-200" />
-          ) : (
-            <div className="h-10 w-10 rounded-full bg-brand-100 flex items-center justify-center text-brand-700 font-bold shrink-0">
-              {user?.name ? user.name.split(' ').map(n=>n[0]).join('').toUpperCase() : 'U'}
-            </div>
-          )}
-          <div className="min-w-0">
-            <h4 className="text-sm font-bold text-slate-700 truncate">{user?.name}</h4>
-            <div className="flex items-center space-x-1.5 mt-0.5">
-              <Badge type={user?.role === 'admin' ? 'brand' : 'default'} size="sm">
-                {user?.role}
-              </Badge>
-              <span className="text-[10px] text-slate-400 font-medium truncate">#{user?.employeeId}</span>
-            </div>
           </div>
         </div>
 
