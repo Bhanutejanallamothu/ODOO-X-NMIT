@@ -15,7 +15,7 @@ const AuditLogsPage = () => {
     try {
       setLoading(true);
       setError('');
-      const res = await api.get('/profile/audit-logs');
+      const res = await api.get('/profiles/audit-logs');
       if (res.data.success) {
         setLogs(res.data.logs);
       }
