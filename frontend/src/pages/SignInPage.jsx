@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import Input from '../components/common/Input';
-import Button from '../components/common/Button';
-import { Lock, Mail } from 'lucide-react';
 
 const SignInPage = () => {
   const { login } = useAuth();
@@ -53,70 +50,71 @@ const SignInPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-12 relative overflow-hidden">
-      {/* Background shapes */}
-      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-brand-100/40 filter blur-3xl" />
-      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-brand-100/40 filter blur-3xl" />
-
-      <div className="w-full max-w-md z-10">
+    <div className="min-h-screen flex items-center justify-center bg-[#E9ECF4] px-4 py-12 font-sans">
+      <div className="w-full max-w-[420px] z-10">
         {/* Branding header */}
         <div className="text-center mb-8">
-          <div className="inline-flex bg-brand-600 p-3.5 rounded-2xl text-white shadow-xl shadow-brand-500/20 mb-4">
-            <span className="font-extrabold text-xl tracking-wider">DF</span>
+          <div className="inline-flex bg-[#7C3AED] p-3 rounded-xl text-white shadow-[4px_4px_10px_rgba(163,169,183,0.3)] mb-4">
+            <span className="font-extrabold text-[18px] tracking-wider">DF</span>
           </div>
-          <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">Welcome to Dayflow</h2>
-          <p className="text-sm text-slate-400 font-semibold tracking-wide uppercase mt-1">Every workday, perfectly aligned</p>
+          <h2 className="text-[28px] font-bold text-[#252A34] tracking-tight">Welcome to Dayflow</h2>
+          <p className="text-[11px] text-[#687080] font-semibold tracking-wide uppercase mt-1">Every workday, perfectly aligned</p>
         </div>
 
         {/* Auth Card */}
-        <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-xl shadow-slate-100/40">
-          <h3 className="text-lg font-bold text-slate-800 mb-6">Sign In</h3>
+        <div className="bg-[#EEF1F7] p-8 rounded-xl border border-[rgba(255,255,255,0.8)] shadow-[8px_8px_18px_rgba(163,169,183,0.28),-6px_-6px_14px_rgba(255,255,255,0.9)]">
+          <h3 className="text-[18px] font-bold text-[#252A34] mb-6 text-center">Sign In</h3>
 
           {generalError && (
-            <div className="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-100 text-xs font-semibold text-rose-600 leading-relaxed">
+            <div className="mb-6 p-4 rounded-xl bg-[#EEF1F7] shadow-[inset_2px_2px_5px_rgba(163,169,183,0.18),inset_-2px_-2px_5px_rgba(255,255,255,0.75)] border border-[rgba(255,255,255,0.8)] text-[12px] font-semibold text-rose-600 leading-relaxed text-center">
               {generalError}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              label="Email Address"
-              name="email"
-              type="email"
-              placeholder="name@company.com"
-              value={formData.email}
-              onChange={handleChange}
-              error={errors.email}
-              required
-            />
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="flex flex-col space-y-1.5 w-full">
+              <label htmlFor="email" className="text-[12px] font-semibold text-[#687080]">Email Address</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="name@company.com"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="w-full h-[40px] px-3.5 bg-[#EEF1F7] rounded-md border border-[rgba(255,255,255,0.8)] shadow-[inset_2px_2px_5px_rgba(163,169,183,0.18),inset_-2px_-2px_5px_rgba(255,255,255,0.75)] text-[13px] text-[#252A34] focus:outline-none focus:border-[#7C3AED]/40 focus:ring-1 focus:ring-[#7C3AED]/30 transition-all placeholder:text-[#687080]/50"
+              />
+              {errors.email && <span className="text-[11px] text-rose-500 font-medium">{errors.email}</span>}
+            </div>
             
-            <div className="relative">
-              <Input
-                label="Password"
+            <div className="flex flex-col space-y-1.5 w-full">
+              <label htmlFor="password" className="text-[12px] font-semibold text-[#687080]">Password</label>
+              <input
+                id="password"
                 name="password"
                 type="password"
                 placeholder="••••••••"
                 value={formData.password}
                 onChange={handleChange}
-                error={errors.password}
                 required
+                className="w-full h-[40px] px-3.5 bg-[#EEF1F7] rounded-md border border-[rgba(255,255,255,0.8)] shadow-[inset_2px_2px_5px_rgba(163,169,183,0.18),inset_-2px_-2px_5px_rgba(255,255,255,0.75)] text-[13px] text-[#252A34] focus:outline-none focus:border-[#7C3AED]/40 focus:ring-1 focus:ring-[#7C3AED]/30 transition-all placeholder:text-[#687080]/50"
               />
+              {errors.password && <span className="text-[11px] text-rose-500 font-medium">{errors.password}</span>}
             </div>
 
-            <Button
+            <button
               type="submit"
-              variant="primary"
-              loading={loading}
-              className="w-full py-3 mt-2"
+              disabled={loading}
+              className="w-full h-[42px] mt-2 bg-[#EEF1F7] text-[#252A34] font-bold text-[13px] rounded-lg border border-[rgba(255,255,255,0.8)] shadow-[4px_4px_10px_rgba(163,169,183,0.28),-4px_-4px_10px_rgba(255,255,255,0.9)] hover:text-[#7C3AED] hover:shadow-[2px_2px_5px_rgba(163,169,183,0.28),-2px_-2px_5px_rgba(255,255,255,0.9)] active:shadow-[inset_2px_2px_5px_rgba(163,169,183,0.18),inset_-2px_-2px_5px_rgba(255,255,255,0.75)] active:border-transparent transition-all flex items-center justify-center disabled:opacity-50"
             >
-              Sign In
-            </Button>
+              {loading ? 'Signing In...' : 'Sign In'}
+            </button>
           </form>
 
           {/* Nav option */}
-          <div className="mt-6 text-center text-xs font-semibold text-slate-400">
+          <div className="mt-8 text-center text-[12px] font-semibold text-[#687080]">
             Don't have an account?{' '}
-            <Link to="/signup" className="text-brand-600 hover:text-brand-700 transition-colors">
+            <Link to="/signup" className="text-[#7C3AED] hover:text-[#6D28D9] transition-colors ml-1">
               Request access / Register
             </Link>
           </div>
