@@ -17,7 +17,7 @@ const Input = ({
   return (
     <div className={`flex flex-col space-y-1 w-full ${className}`}>
       {label && (
-        <label htmlFor={name} className="text-sm font-semibold text-slate-700">
+        <label htmlFor={name} className="text-[12px] font-semibold text-paper-text tracking-tight">
           {label} {required && <span className="text-rose-500">*</span>}
         </label>
       )}
@@ -30,15 +30,15 @@ const Input = ({
         onChange={onChange}
         disabled={disabled}
         required={required}
-        className={`w-full px-3.5 py-2.5 rounded-lg border text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 disabled:bg-slate-50 disabled:text-slate-400 ${
+        className={`w-full px-3.5 py-2.5 rounded-[6px] text-[13px] text-paper-text bg-[#E7EAF1] shadow-paper-inset transition-all duration-200 border disabled:opacity-60 focus:outline-none focus:ring-1 focus:ring-brand-400 focus:border-brand-400 ${
           error
-            ? 'border-rose-300 focus:ring-rose-500/20 focus:border-rose-500'
-            : 'border-slate-200'
+            ? 'border-rose-300 focus:ring-rose-400 focus:border-rose-400'
+            : 'border-transparent'
         }`}
         {...props}
       />
       {error && <span className="text-xs text-rose-500 font-medium">{error}</span>}
-      {!error && helperText && <span className="text-xs text-slate-400">{helperText}</span>}
+      {!error && helperText && <span className="text-[11px] text-paper-muted">{helperText}</span>}
     </div>
   );
 };

@@ -2,29 +2,29 @@ import React from 'react';
 
 const Button = ({
   children,
-  type = 'button',
-  variant = 'primary', // primary, secondary, danger, success, outline
+  variant = 'primary', // primary, secondary, outline, danger, success
   size = 'md', // sm, md, lg
-  loading = false,
+  type = 'button',
+  icon: Icon,
   disabled = false,
+  loading = false,
   onClick,
   className = '',
-  icon: Icon
 }) => {
-  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+  const baseStyles = 'inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-200 outline-none focus:outline-none';
   
   const variants = {
-    primary: 'bg-brand-600 hover:bg-brand-700 text-white shadow-md shadow-brand-500/10 focus:ring-brand-500',
-    secondary: 'bg-slate-100 hover:bg-slate-200 text-slate-700 focus:ring-slate-400',
-    outline: 'border border-slate-300 hover:bg-slate-50 text-slate-700 focus:ring-brand-500',
-    danger: 'bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-500/10 focus:ring-rose-500',
-    success: 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-500/10 focus:ring-emerald-500',
+    primary: 'bg-paper-surface border border-brand-300 text-brand-600 shadow-paper hover:bg-brand-50 hover:text-brand-700 active:shadow-paper-inset active:bg-brand-100',
+    secondary: 'bg-paper-surface border border-paper-border text-paper-text shadow-paper hover:bg-paper-raised active:shadow-paper-inset',
+    outline: 'bg-transparent border border-paper-border text-paper-text hover:bg-paper-surface',
+    danger: 'bg-paper-surface border border-rose-200 text-rose-600 shadow-paper hover:bg-rose-50 hover:text-rose-700 active:shadow-paper-inset active:bg-rose-100',
+    success: 'bg-paper-surface border border-emerald-200 text-emerald-600 shadow-paper hover:bg-emerald-50 hover:text-emerald-700 active:shadow-paper-inset active:bg-emerald-100',
   };
 
   const sizes = {
     sm: 'px-3 py-1.5 text-xs',
-    md: 'px-4 py-2.5 text-sm',
-    lg: 'px-5 py-3 text-base',
+    md: 'px-4 py-2 text-[13px]',
+    lg: 'px-5 py-2.5 text-[14px]',
   };
 
   return (

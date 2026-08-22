@@ -30,3 +30,9 @@
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
+
+body { 
+  @apply bg-paper-bg text-paper-text; 
+  filter: grayscale(100%);
+}
+

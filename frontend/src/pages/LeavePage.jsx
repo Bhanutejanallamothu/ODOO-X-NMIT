@@ -130,17 +130,17 @@ const LeavePage = () => {
     {
       header: 'Leave Type',
       accessor: 'leave_type',
-      render: (row) => <span className="font-bold text-slate-700 uppercase">{row.leave_type} Leave</span>
+      render: (row) => <span className="font-bold text-paper-text uppercase tracking-tight">{row.leave_type} Leave</span>
     },
     {
       header: 'Start Date',
       accessor: 'start_date',
-      render: (row) => new Date(row.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      render: (row) => <span className="text-paper-text font-semibold">{new Date(row.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
     },
     {
       header: 'End Date',
       accessor: 'end_date',
-      render: (row) => new Date(row.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      render: (row) => <span className="text-paper-text font-semibold">{new Date(row.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
     },
     {
       header: 'Status',
@@ -156,7 +156,7 @@ const LeavePage = () => {
       header: 'Remarks',
       accessor: 'remarks',
       render: (row) => (
-        <div className="max-w-[200px] truncate text-xs text-slate-500 font-medium" title={row.remarks}>
+        <div className="max-w-[200px] truncate text-[13px] text-paper-muted font-medium" title={row.remarks}>
           {row.remarks || '-'}
         </div>
       )
@@ -165,7 +165,7 @@ const LeavePage = () => {
       header: 'Admin Comments',
       accessor: 'admin_comments',
       render: (row) => (
-        <div className="max-w-[200px] truncate text-xs text-slate-400 italic" title={row.admin_comments}>
+        <div className="max-w-[200px] truncate text-[13px] text-paper-muted italic" title={row.admin_comments}>
           {row.admin_comments || '-'}
         </div>
       )
@@ -176,14 +176,14 @@ const LeavePage = () => {
     <div className="space-y-6 animate-in fade-in duration-200">
       
       {error && (
-        <div className="p-4 bg-rose-50 border border-rose-100 text-xs font-semibold text-rose-600 rounded-xl flex items-center space-x-2">
+        <div className="p-4 bg-rose-50 border border-rose-100 text-[13px] font-semibold text-rose-600 rounded-[10px] flex items-center space-x-2">
           <AlertCircle className="h-4 w-4 shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
       {success && (
-        <div className="p-4 bg-emerald-50 border border-emerald-100 text-xs font-semibold text-emerald-600 rounded-xl flex items-center space-x-2">
+        <div className="p-4 bg-emerald-50 border border-emerald-100 text-[13px] font-semibold text-emerald-600 rounded-[10px] flex items-center space-x-2">
           <CheckCircle className="h-4 w-4 shrink-0" />
           <span>{success}</span>
         </div>
@@ -192,40 +192,40 @@ const LeavePage = () => {
       {/* Leave Balance Stats Cards */}
       {balances && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col justify-between">
+          <div className="bg-paper-surface p-5 rounded-[10px] border border-paper-border shadow-paper flex flex-col justify-between">
             <div>
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Paid Leave Balance</span>
-              <h3 className="text-3xl font-extrabold text-slate-800 mt-2">
-                {balances.paid_accrued - balances.paid_used} <span className="text-xs text-slate-500 font-medium">days left</span>
+              <span className="text-[11px] font-bold text-paper-muted uppercase tracking-widest">Paid Leave Balance</span>
+              <h3 className="text-3xl font-extrabold text-paper-text mt-2 tracking-tight">
+                {balances.paid_accrued - balances.paid_used} <span className="text-[13px] text-paper-muted font-bold">days left</span>
               </h3>
             </div>
-            <div className="flex justify-between items-center text-xs text-slate-500 font-medium mt-4 pt-3 border-t border-slate-50">
+            <div className="flex justify-between items-center text-[12px] text-paper-muted font-semibold mt-4 pt-3 border-t border-white/40">
               <span>Accrued: {balances.paid_accrued}d</span>
               <span>Used: {balances.paid_used}d</span>
             </div>
           </div>
 
-          <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col justify-between">
+          <div className="bg-paper-surface p-5 rounded-[10px] border border-paper-border shadow-paper flex flex-col justify-between">
             <div>
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Sick Leave Balance</span>
-              <h3 className="text-3xl font-extrabold text-slate-800 mt-2">
-                {balances.sick_accrued - balances.sick_used} <span className="text-xs text-slate-500 font-medium">days left</span>
+              <span className="text-[11px] font-bold text-paper-muted uppercase tracking-widest">Sick Leave Balance</span>
+              <h3 className="text-3xl font-extrabold text-paper-text mt-2 tracking-tight">
+                {balances.sick_accrued - balances.sick_used} <span className="text-[13px] text-paper-muted font-bold">days left</span>
               </h3>
             </div>
-            <div className="flex justify-between items-center text-xs text-slate-500 font-medium mt-4 pt-3 border-t border-slate-50">
+            <div className="flex justify-between items-center text-[12px] text-paper-muted font-semibold mt-4 pt-3 border-t border-white/40">
               <span>Accrued: {balances.sick_accrued}d</span>
               <span>Used: {balances.sick_used}d</span>
             </div>
           </div>
 
-          <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex flex-col justify-between">
+          <div className="bg-paper-surface p-5 rounded-[10px] border border-paper-border shadow-paper flex flex-col justify-between">
             <div>
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Unpaid Leave Used</span>
-              <h3 className="text-3xl font-extrabold text-slate-800 mt-2">
-                {balances.unpaid_used} <span className="text-xs text-slate-500 font-medium">days taken</span>
+              <span className="text-[11px] font-bold text-paper-muted uppercase tracking-widest">Unpaid Leave Used</span>
+              <h3 className="text-3xl font-extrabold text-paper-text mt-2 tracking-tight">
+                {balances.unpaid_used} <span className="text-[13px] text-paper-muted font-bold">days taken</span>
               </h3>
             </div>
-            <div className="text-xs text-slate-400 font-semibold mt-4 pt-3 border-t border-slate-50">
+            <div className="text-[12px] text-paper-muted font-semibold mt-4 pt-3 border-t border-white/40">
               No maximum limit
             </div>
           </div>
@@ -256,23 +256,23 @@ const LeavePage = () => {
         title="Request Leave / Time-Off"
         footer={
           <div className="flex space-x-2">
-            <Button variant="outline" onClick={() => setModalOpen(false)}>Cancel</Button>
+            <Button variant="secondary" onClick={() => setModalOpen(false)}>Cancel</Button>
             <Button variant="primary" onClick={handleFormSubmit} loading={modalLoading} disabled={isBalanceExceeded}>
               Submit Request
             </Button>
           </div>
         }
       >
-        <form onSubmit={handleFormSubmit} className="space-y-4 text-sm">
+        <form onSubmit={handleFormSubmit} className="space-y-4 text-[13px]">
           
           <div className="flex flex-col space-y-1">
-            <label className="text-sm font-semibold text-slate-700">Leave Type</label>
+            <label className="text-[12px] font-semibold text-paper-text tracking-tight">Leave Type</label>
             <select
               name="leaveType"
               value={formFields.leaveType}
               onChange={handleFormChange}
               required
-              className="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500"
+              className="w-full px-3.5 py-2.5 rounded-[6px] text-[13px] text-paper-text bg-[#E7EAF1] shadow-paper-inset transition-all duration-200 border-transparent focus:outline-none focus:ring-1 focus:ring-brand-400 focus:border-brand-400"
             >
               <option value="paid">Paid Leave</option>
               <option value="sick">Sick Leave</option>
@@ -309,10 +309,10 @@ const LeavePage = () => {
 
           {/* Duration display and validation warning */}
           {requestedDays > 0 && (
-            <div className={`p-3 rounded-lg flex items-center space-x-2 text-xs font-semibold ${
-              isBalanceExceeded ? 'bg-amber-50 border border-amber-200 text-amber-700' : 'bg-slate-50 border border-slate-100 text-slate-600'
+            <div className={`p-3 rounded-[8px] flex items-center space-x-2 text-[12px] font-semibold ${
+              isBalanceExceeded ? 'bg-amber-50 border border-amber-200 text-amber-700' : 'bg-paper-raised border border-paper-border text-paper-muted'
             }`}>
-              <AlertCircle className="h-4 w-4 shrink-0" />
+              <AlertCircle className="h-[16px] w-[16px] shrink-0" />
               <span>
                 {isBalanceExceeded 
                   ? `Insufficient balance! Requested duration: ${requestedDays} days, Available: ${availableDays} days.`

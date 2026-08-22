@@ -6,20 +6,20 @@ const Badge = ({
   size = 'md', // sm, md
   className = '',
 }) => {
-  const baseStyles = 'inline-flex items-center font-semibold rounded-full uppercase tracking-wider';
+  const baseStyles = 'inline-flex items-center font-semibold rounded-md uppercase tracking-wider';
   
   const types = {
-    default: 'bg-slate-100 text-slate-600',
-    success: 'bg-emerald-50 text-emerald-700 border border-emerald-100',
-    info: 'bg-blue-50 text-blue-700 border border-blue-100',
-    warning: 'bg-amber-50 text-amber-700 border border-amber-100',
-    danger: 'bg-rose-50 text-rose-700 border border-rose-100',
+    default: 'bg-paper-raised text-paper-muted border border-paper-border shadow-sm',
+    success: 'bg-[#E6F4EA] text-[#16805C] border border-[#CEEAD6]',
+    info: 'bg-[#E8F0FE] text-[#1967D2] border border-[#D2E3FC]',
+    warning: 'bg-[#FEF7E0] text-[#B7791F] border border-[#FEEFC3]',
+    danger: 'bg-[#FCE8E8] text-[#D6455D] border border-[#FAD2D2]',
     brand: 'bg-brand-50 text-brand-700 border border-brand-100',
   };
 
   const sizes = {
-    sm: 'px-2 py-0.5 text-[10px]',
-    md: 'px-2.5 py-1 text-[11px]',
+    sm: 'px-1.5 py-0.5 text-[9px]',
+    md: 'px-2 py-0.5 text-[10px]',
   };
 
   return (

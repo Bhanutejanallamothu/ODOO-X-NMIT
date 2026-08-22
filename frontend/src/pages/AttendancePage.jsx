@@ -39,20 +39,24 @@ const AttendancePage = () => {
     {
       header: 'Date',
       accessor: 'date',
-      render: (row) => new Date(row.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })
+      render: (row) => (
+        <span className="font-semibold text-paper-text">
+          {new Date(row.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
+        </span>
+      )
     },
     {
       header: 'Check-In',
       accessor: 'check_in',
       render: (row) => (
-        <span className="font-semibold text-slate-700">{formatTime(row.check_in)}</span>
+        <span className="font-semibold text-paper-text">{formatTime(row.check_in)}</span>
       )
     },
     {
       header: 'Check-Out',
       accessor: 'check_out',
       render: (row) => (
-        <span className="font-semibold text-slate-700">{formatTime(row.check_out)}</span>
+        <span className="font-semibold text-paper-text">{formatTime(row.check_out)}</span>
       )
     },
     {
@@ -72,7 +76,7 @@ const AttendancePage = () => {
     <div className="space-y-6 animate-in fade-in duration-200">
       
       {error && (
-        <div className="p-4 bg-rose-50 border border-rose-100 text-xs font-semibold text-rose-600 rounded-xl flex items-center space-x-2">
+        <div className="p-4 bg-rose-50 border border-rose-100 text-[13px] font-semibold text-rose-600 rounded-[10px] flex items-center space-x-2">
           <AlertCircle className="h-4 w-4 shrink-0" />
           <span>{error}</span>
         </div>
@@ -82,8 +86,8 @@ const AttendancePage = () => {
         title="My Attendance Ledger" 
         subtitle="Historical clock records"
         actions={
-          <div className="flex items-center space-x-1.5 text-xs text-slate-400 font-bold uppercase tracking-wider bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
-            <CalendarDays className="h-4 w-4 text-slate-400" />
+          <div className="flex items-center space-x-1.5 text-[10px] text-paper-muted font-bold uppercase tracking-wider bg-paper-surface px-3 py-1.5 rounded-[6px] border border-paper-border shadow-paper-inset">
+            <CalendarDays className="h-[14px] w-[14px] text-paper-muted" />
             <span>Attendance Logged: {logs.length} days</span>
           </div>
         }
