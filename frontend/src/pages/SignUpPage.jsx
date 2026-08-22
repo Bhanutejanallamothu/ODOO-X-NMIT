@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import './Auth.css';
 
 const SignUpPage = () => {
   const { register } = useAuth();
@@ -60,7 +61,7 @@ const SignUpPage = () => {
     setLoading(false);
 
     if (res.success) {
-      setSuccessMessage(res.message || 'Registration successful! A mock verification email link has been outputted to the server console.');
+      setSuccessMessage(res.message || 'Registration successful!');
       setFormData({
         employeeId: '',
         email: '',
@@ -77,149 +78,131 @@ const SignUpPage = () => {
     }
   };
 
-  const inputClasses = "w-full h-[40px] px-3.5 bg-[#F0F0F0] rounded-md border border-[rgba(255,255,255,0.8)] shadow-[inset_2px_2px_5px_rgba(0,0,0,0.08),inset_-2px_-2px_5px_rgba(255,255,255,0.75)] text-[13px] text-black focus:outline-none focus:border-black/40 focus:ring-1 focus:ring-black/20 transition-all placeholder:text-[#888888]";
-  const labelClasses = "text-[12px] font-bold text-[#555555]";
+  const idIcon = (
+    <svg viewBox="0 0 24 24"><path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" /></svg>
+  );
+  
+  const mailIcon = (
+    <svg viewBox="0 0 24 24"><path d="M4,4H20A2,2 0 0,1 22,6V18A2,2 0 0,1 20,20H4A2,2 0 0,1 2,18V6A2,2 0 0,1 4,4M4,6V8L12,13L20,8V6L12,11L4,6Z" /></svg>
+  );
+
+  const lockIcon = (
+    <svg viewBox="0 0 24 24"><path d="M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z" /></svg>
+  );
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#EBEBEB] px-4 py-12 font-sans">
-      <div className="w-full max-w-[550px] z-10">
-        {/* Logo header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex bg-black p-3 rounded-xl text-white shadow-[4px_4px_10px_rgba(0,0,0,0.15)] mb-4">
-            <span className="font-extrabold text-[18px] tracking-wider">DF</span>
+    <div className="auth-container">
+      {successMessage ? (
+        <div className="auth-form" style={{ transform: 'none', background: 'white', padding: '2rem' }}>
+          <h2 className="auth-h2" style={{ color: 'green' }}>Registration Complete</h2>
+          <p style={{ margin: '1rem 0' }}>{successMessage}</p>
+          <div className="btn-group">
+            <Link to="/signin">
+              <button className="auth-btn btn--primary">Proceed to Login</button>
+            </Link>
           </div>
-          <h2 className="text-[28px] font-bold text-black tracking-tight">Create your Account</h2>
-          <p className="text-[11px] text-[#555555] font-semibold tracking-wide uppercase mt-1">Every workday, perfectly aligned</p>
         </div>
+      ) : (
+        <form className="auth-form" onSubmit={handleSubmit} autoComplete="off">
+          <div className="form-inner">
+            <h2 className="auth-h2">Register</h2>
 
-        {/* Auth Card */}
-        <div className="bg-[#F0F0F0] p-8 rounded-xl border border-[rgba(255,255,255,0.8)] shadow-[8px_8px_18px_rgba(0,0,0,0.1),-6px_-6px_14px_rgba(255,255,255,0.9)]">
-          
-          {successMessage ? (
-            <div className="text-center py-6">
-              <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-[#F0F0F0] border border-[rgba(255,255,255,0.8)] shadow-[inset_2px_2px_5px_rgba(0,0,0,0.08),inset_-2px_-2px_5px_rgba(255,255,255,0.75)] text-black mb-4">
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                </svg>
+            {generalError && <div className="auth-general-error">{generalError}</div>}
+
+            <div className="input-wrapper">
+              <label className="auth-label" htmlFor="employeeId">Employee ID</label>
+              <div className="input-group">
+                <span className="icon">{idIcon}</span>
+                <input
+                  type="text"
+                  id="employeeId"
+                  name="employeeId"
+                  value={formData.employeeId}
+                  onChange={handleChange}
+                  data-lpignore="true"
+                  required
+                />
               </div>
-              <h3 className="text-[18px] font-bold text-black mb-2">Check Your Email</h3>
-              <p className="text-[12px] text-[#555555] font-bold leading-relaxed mb-6">
-                {successMessage}
-              </p>
-              <div className="flex justify-center space-x-4">
-                <Link to="/signin">
-                  <button className="h-[42px] px-6 bg-[#F0F0F0] text-black font-bold text-[13px] rounded-lg border border-[rgba(255,255,255,0.8)] shadow-[4px_4px_10px_rgba(0,0,0,0.1),-4px_-4px_10px_rgba(255,255,255,0.9)] hover:shadow-[2px_2px_5px_rgba(0,0,0,0.1),-2px_-2px_5px_rgba(255,255,255,0.9)] active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.08),inset_-2px_-2px_5px_rgba(255,255,255,0.75)] active:border-transparent transition-all flex items-center justify-center">
-                    Proceed to Login
-                  </button>
-                </Link>
+              {errors.employeeId && <span className="auth-error">{errors.employeeId}</span>}
+            </div>
+
+            <div className="input-wrapper">
+              <label className="auth-label" htmlFor="name">Full Name</label>
+              <div className="input-group">
+                <span className="icon">{idIcon}</span>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  data-lpignore="true"
+                  required
+                />
+              </div>
+              {errors.name && <span className="auth-error">{errors.name}</span>}
+            </div>
+
+            <div className="input-wrapper">
+              <label className="auth-label" htmlFor="email">Email</label>
+              <div className="input-group">
+                <span className="icon">{mailIcon}</span>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  data-lpignore="true"
+                  required
+                />
+              </div>
+              {errors.email && <span className="auth-error">{errors.email}</span>}
+            </div>
+
+            <div className="input-wrapper">
+              <label className="auth-label" htmlFor="password">Password</label>
+              <div className="input-group">
+                <span className="icon">{lockIcon}</span>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  data-lpignore="true"
+                  required
+                />
+              </div>
+              {errors.password && <span className="auth-error">{errors.password}</span>}
+            </div>
+            
+            <div className="input-wrapper" style={{ marginTop: '1rem' }}>
+              <label className="auth-label">Role</label>
+              <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', fontWeight: 'bold' }}>
+                  <input type="radio" name="role" value="employee" checked={formData.role === 'employee'} onChange={handleChange} />
+                  Employee
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', fontWeight: 'bold' }}>
+                  <input type="radio" name="role" value="admin" checked={formData.role === 'admin'} onChange={handleChange} />
+                  Admin / HR
+                </label>
               </div>
             </div>
-          ) : (
-            <>
-              <h3 className="text-[18px] font-bold text-black mb-6 text-center">Employee Registration</h3>
-              
-              {generalError && (
-                <div className="mb-6 p-4 rounded-xl bg-[#F0F0F0] border border-[rgba(255,255,255,0.8)] shadow-[inset_2px_2px_5px_rgba(0,0,0,0.08),inset_-2px_-2px_5px_rgba(255,255,255,0.75)] text-[12px] font-bold text-black text-center">
-                  {generalError}
-                </div>
-              )}
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex flex-col space-y-1.5 w-full">
-                    <label htmlFor="employeeId" className={labelClasses}>Employee ID</label>
-                    <input id="employeeId" name="employeeId" placeholder="e.g. DF-EMP-05" value={formData.employeeId} onChange={handleChange} required className={inputClasses} />
-                    {errors.employeeId && <span className="text-[11px] text-black font-extrabold">{errors.employeeId}</span>}
-                  </div>
-                  <div className="flex flex-col space-y-1.5 w-full">
-                    <label htmlFor="name" className={labelClasses}>Full Name</label>
-                    <input id="name" name="name" placeholder="e.g. Robert Downey" value={formData.name} onChange={handleChange} required className={inputClasses} />
-                    {errors.name && <span className="text-[11px] text-black font-extrabold">{errors.name}</span>}
-                  </div>
-                </div>
+            <div className="btn-group">
+              <button type="submit" disabled={loading} className="auth-btn btn--primary" style={{ width: '100%', justifyContent: 'center' }}>
+                {loading ? 'Registering...' : 'Sign Up'}
+              </button>
+            </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex flex-col space-y-1.5 w-full">
-                    <label htmlFor="email" className={labelClasses}>Email Address</label>
-                    <input id="email" name="email" type="email" placeholder="name@company.com" value={formData.email} onChange={handleChange} required className={inputClasses} />
-                    {errors.email && <span className="text-[11px] text-black font-extrabold">{errors.email}</span>}
-                  </div>
-                  <div className="flex flex-col space-y-1.5 w-full">
-                    <label htmlFor="password" className={labelClasses}>Password</label>
-                    <input id="password" name="password" type="password" placeholder="••••••••" value={formData.password} onChange={handleChange} required className={inputClasses} />
-                    {errors.password && <span className="text-[11px] text-black font-extrabold">{errors.password}</span>}
-                  </div>
-                </div>
-
-                <div className="flex flex-col space-y-1.5 mt-2">
-                  <label className={labelClasses}>Account Role</label>
-                  <div className="grid grid-cols-2 gap-4">
-                    <label className={`flex items-center justify-center h-[40px] rounded-md border text-[13px] font-bold cursor-pointer transition-all ${
-                      formData.role === 'employee' 
-                        ? 'border-black/40 bg-[#F0F0F0] text-black shadow-[inset_2px_2px_5px_rgba(0,0,0,0.08),inset_-2px_-2px_5px_rgba(255,255,255,0.75)]' 
-                        : 'border-[rgba(255,255,255,0.8)] bg-[#F0F0F0] text-[#555555] shadow-[4px_4px_10px_rgba(0,0,0,0.1),-4px_-4px_10px_rgba(255,255,255,0.9)] hover:text-black'
-                    }`}>
-                      <input type="radio" name="role" value="employee" checked={formData.role === 'employee'} onChange={handleChange} className="sr-only" />
-                      Employee
-                    </label>
-                    <label className={`flex items-center justify-center h-[40px] rounded-md border text-[13px] font-bold cursor-pointer transition-all ${
-                      formData.role === 'admin' 
-                        ? 'border-black/40 bg-[#F0F0F0] text-black shadow-[inset_2px_2px_5px_rgba(0,0,0,0.08),inset_-2px_-2px_5px_rgba(255,255,255,0.75)]' 
-                        : 'border-[rgba(255,255,255,0.8)] bg-[#F0F0F0] text-[#555555] shadow-[4px_4px_10px_rgba(0,0,0,0.1),-4px_-4px_10px_rgba(255,255,255,0.9)] hover:text-black'
-                    }`}>
-                      <input type="radio" name="role" value="admin" checked={formData.role === 'admin'} onChange={handleChange} className="sr-only" />
-                      HR / Admin
-                    </label>
-                  </div>
-                </div>
-
-                <div className="py-2">
-                  <div className="h-px bg-[#EBEBEB] shadow-[0px_1px_0px_rgba(255,255,255,1)] w-full my-2"></div>
-                </div>
-                <p className="text-[11px] font-bold text-[#555555] uppercase tracking-wider mb-2">Professional Details (Optional)</p>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex flex-col space-y-1.5 w-full">
-                    <label htmlFor="jobTitle" className={labelClasses}>Job Title</label>
-                    <input id="jobTitle" name="jobTitle" placeholder="e.g. Sales Lead" value={formData.jobTitle} onChange={handleChange} className={inputClasses} />
-                  </div>
-                  <div className="flex flex-col space-y-1.5 w-full">
-                    <label htmlFor="department" className={labelClasses}>Department</label>
-                    <input id="department" name="department" placeholder="e.g. Operations" value={formData.department} onChange={handleChange} className={inputClasses} />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex flex-col space-y-1.5 w-full">
-                    <label htmlFor="phone" className={labelClasses}>Phone</label>
-                    <input id="phone" name="phone" placeholder="e.g. +1 555-0199" value={formData.phone} onChange={handleChange} className={inputClasses} />
-                  </div>
-                  <div className="flex flex-col space-y-1.5 w-full">
-                    <label htmlFor="address" className={labelClasses}>Home Address</label>
-                    <input id="address" name="address" placeholder="City, Country" value={formData.address} onChange={handleChange} className={inputClasses} />
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full h-[42px] mt-6 bg-[#F0F0F0] text-black font-bold text-[13px] rounded-lg border border-[rgba(255,255,255,0.8)] shadow-[4px_4px_10px_rgba(0,0,0,0.1),-4px_-4px_10px_rgba(255,255,255,0.9)] hover:shadow-[2px_2px_5px_rgba(0,0,0,0.1),-2px_-2px_5px_rgba(255,255,255,0.9)] active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.08),inset_-2px_-2px_5px_rgba(255,255,255,0.75)] active:border-transparent transition-all flex items-center justify-center disabled:opacity-50"
-                >
-                  {loading ? 'Registering...' : 'Register Account'}
-                </button>
-              </form>
-
-              {/* Login redirection option */}
-              <div className="mt-8 text-center text-[12px] font-semibold text-[#555555]">
-                Already have an account?{' '}
-                <Link to="/signin" className="text-black font-bold underline hover:text-[#555555] transition-colors ml-1">
-                  Sign In
-                </Link>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
+            <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+              <Link className="auth-link" style={{ fontSize: '0.8rem', fontWeight: 'bold' }} to="/signin">Already have an account? Sign In</Link>
+            </div>
+          </div>
+        </form>
+      )}
     </div>
   );
 };
