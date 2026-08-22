@@ -93,33 +93,33 @@ const PayrollPage = () => {
     {
       header: 'Pay Period',
       accessor: 'month',
-      render: (row) => <span className="font-bold text-slate-700">{getMonthName(row.month)} {row.year}</span>
+      render: (row) => <span className="font-bold text-paper-text tracking-tight">{getMonthName(row.month)} {row.year}</span>
     },
     {
       header: 'Base Salary',
       accessor: 'base_salary',
-      render: (row) => `$${parseFloat(row.base_salary).toFixed(2)}`
+      render: (row) => <span className="text-paper-text font-semibold">${parseFloat(row.base_salary).toFixed(2)}</span>
     },
     {
       header: 'Allowances',
       accessor: 'allowances',
-      render: (row) => `$${parseFloat(row.allowances).toFixed(2)}`
+      render: (row) => <span className="text-paper-text font-semibold">${parseFloat(row.allowances).toFixed(2)}</span>
     },
     {
       header: 'Deductions',
       accessor: 'deductions',
-      render: (row) => `$${parseFloat(row.deductions).toFixed(2)}`
+      render: (row) => <span className="text-paper-text font-semibold">${parseFloat(row.deductions).toFixed(2)}</span>
     },
     {
       header: 'Net Salary',
       accessor: 'net_salary',
-      render: (row) => <span className="font-extrabold text-slate-800">$${parseFloat(row.net_salary).toFixed(2)}</span>
+      render: (row) => <span className="font-extrabold text-paper-text tracking-tight">${parseFloat(row.net_salary).toFixed(2)}</span>
     },
     {
       header: 'Actions',
       accessor: 'actions',
       render: (row) => (
-        <Button variant="outline" size="sm" onClick={() => openSlipModal(row)} icon={FileText}>
+        <Button variant="secondary" size="sm" onClick={() => openSlipModal(row)} icon={FileText}>
           View Slip
         </Button>
       )
@@ -130,7 +130,7 @@ const PayrollPage = () => {
     <div className="space-y-6 animate-in fade-in duration-200">
       
       {error && (
-        <div className="p-4 bg-rose-50 border border-rose-100 text-xs font-semibold text-rose-600 rounded-xl flex items-center space-x-2">
+        <div className="p-4 bg-rose-50 border border-rose-100 text-[13px] font-semibold text-rose-600 rounded-[10px] flex items-center space-x-2">
           <AlertCircle className="h-4 w-4 shrink-0" />
           <span>{error}</span>
         </div>
@@ -140,8 +140,8 @@ const PayrollPage = () => {
         title="My Payroll & Earnings" 
         subtitle="Historical monthly salary payouts"
         actions={
-          <div className="flex items-center space-x-1.5 text-xs text-slate-400 font-bold uppercase tracking-wider bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
-            <CreditCard className="h-4 w-4 text-slate-400" />
+          <div className="flex items-center space-x-1.5 text-[10px] text-paper-muted font-bold uppercase tracking-wider bg-paper-surface px-3 py-1.5 rounded-[6px] border border-paper-border shadow-paper-inset">
+            <CreditCard className="h-[14px] w-[14px] text-paper-muted" />
             <span>Records: {payrolls.length} months</span>
           </div>
         }
@@ -154,14 +154,14 @@ const PayrollPage = () => {
         />
       </Card>
 
-      {/* Slip Text Modal */}
+      {/* Slip Text Modal - PAPER REDESIGN */}
       <Modal
         isOpen={slipModalOpen}
         onClose={() => setSlipModalOpen(false)}
         title="Salary Slip Details"
         footer={
           <div className="flex space-x-2">
-            <Button variant="outline" onClick={copyToClipboard} icon={copied ? Check : Copy}>
+            <Button variant="secondary" onClick={copyToClipboard} icon={copied ? Check : Copy}>
               {copied ? 'Copied' : 'Copy'}
             </Button>
             <Button variant="primary" onClick={handlePrint} icon={Printer}>
@@ -178,7 +178,7 @@ const PayrollPage = () => {
             </svg>
           </div>
         ) : (
-          <div className="bg-slate-900 text-slate-100 p-4 rounded-xl font-mono text-xs whitespace-pre-wrap leading-relaxed border border-slate-800 shadow-inner max-h-[60vh] overflow-y-auto">
+          <div className="bg-[#FAFBFD] text-[#252A34] p-6 sm:p-8 rounded-[4px] font-mono text-[13px] whitespace-pre-wrap leading-[1.8] border border-slate-200 shadow-sm max-h-[60vh] overflow-y-auto">
             {slipText}
           </div>
         )}

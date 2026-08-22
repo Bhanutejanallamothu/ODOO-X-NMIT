@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { X } from 'lucide-react';
-import Button from './Button';
 
 const Modal = ({
   isOpen,
@@ -8,9 +7,8 @@ const Modal = ({
   title,
   children,
   footer,
-  maxWidth = 'max-w-md', // max-w-sm, max-w-md, max-w-lg, max-w-xl, max-w-2xl
+  maxWidth = 'max-w-md',
 }) => {
-  // Prevent background scroll when modal is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -25,28 +23,22 @@ const Modal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-all duration-200">
-      {/* Modal Dialog */}
-      <div className={`w-full bg-white rounded-xl shadow-xl border border-slate-100 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200 ${maxWidth}`}>
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-          <h3 className="text-base font-bold text-slate-800">{title}</h3>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#D3D8E5]/70 backdrop-blur-[2px] transition-all duration-200">
+      <div className={`w-full bg-paper-surface rounded-[10px] shadow-paper border border-paper-border flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200 ${maxWidth}`}>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/40">
+          <h3 className="text-[16px] font-bold text-paper-text">{title}</h3>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-all"
+            className="p-1 rounded-lg text-paper-muted hover:text-paper-text hover:bg-paper-raised shadow-sm active:shadow-paper-inset transition-all"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
-
-        {/* Content */}
         <div className="p-6 overflow-y-auto max-h-[70vh]">
           {children}
         </div>
-
-        {/* Footer */}
         {footer && (
-          <div className="flex items-center justify-end space-x-2 px-6 py-4 bg-slate-50 border-t border-slate-100">
+          <div className="flex items-center justify-end space-x-2 px-6 py-4 bg-paper-raised/30 border-t border-white/40">
             {footer}
           </div>
         )}

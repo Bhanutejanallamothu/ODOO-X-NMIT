@@ -128,7 +128,7 @@ const EmployeeDashboard = () => {
     <div className="space-y-8 animate-in fade-in duration-200">
       
       {error && (
-        <div className="p-4 bg-rose-50 border border-rose-100 text-xs font-semibold text-rose-600 rounded-xl flex items-center space-x-2">
+        <div className="p-4 bg-rose-50 border border-rose-100 text-[13px] font-semibold text-rose-600 rounded-[10px] flex items-center space-x-2">
           <AlertCircle className="h-4 w-4 shrink-0" />
           <span>{error}</span>
         </div>
@@ -145,24 +145,24 @@ const EmployeeDashboard = () => {
         >
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-2">
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Current Status</span>
+              <span className="text-[11px] font-bold text-paper-muted uppercase tracking-wider">Current Status</span>
               
               {!clockStatus.checkedIn && (
-                <div className="flex items-center space-x-2 text-slate-500">
-                  <Clock className="h-5 w-5 text-slate-400" />
-                  <span className="text-sm font-semibold">Not checked in today.</span>
+                <div className="flex items-center space-x-2 text-paper-muted">
+                  <Clock className="h-[18px] w-[18px]" />
+                  <span className="text-[13px] font-semibold text-paper-text">Not checked in today.</span>
                 </div>
               )}
               {clockStatus.checkedIn && !clockStatus.checkedOut && (
-                <div className="flex items-center space-x-2 text-emerald-600">
-                  <Clock className="h-5 w-5 animate-pulse" />
-                  <span className="text-sm font-semibold">Checked In at {formatTime(clockStatus.record?.check_in)}</span>
+                <div className="flex items-center space-x-2 text-brand-600">
+                  <Clock className="h-[18px] w-[18px] animate-pulse" />
+                  <span className="text-[13px] font-bold">Checked In at {formatTime(clockStatus.record?.check_in)}</span>
                 </div>
               )}
               {clockStatus.checkedIn && clockStatus.checkedOut && (
-                <div className="flex items-center space-x-2 text-slate-600">
-                  <FileCheck className="h-5 w-5 text-slate-400" />
-                  <span className="text-sm font-semibold">
+                <div className="flex items-center space-x-2 text-paper-text">
+                  <FileCheck className="h-[18px] w-[18px] text-paper-muted" />
+                  <span className="text-[13px] font-bold">
                     Completed today (Out: {formatTime(clockStatus.record?.check_out)})
                   </span>
                 </div>
@@ -175,17 +175,17 @@ const EmployeeDashboard = () => {
                 onClick={handleCheckIn}
                 disabled={clockStatus.checkedIn}
                 loading={actionLoading}
-                className="px-6 py-3"
+                className="px-6 py-2.5 shadow-paper text-[13px]"
                 icon={ArrowUpRight}
               >
                 Clock In
               </Button>
               <Button
-                variant="outline"
+                variant="secondary"
                 onClick={handleCheckOut}
                 disabled={!clockStatus.checkedIn || clockStatus.checkedOut}
                 loading={actionLoading}
-                className="px-6 py-3"
+                className="px-6 py-2.5 shadow-paper text-[13px] bg-paper-bg"
                 icon={ArrowDownRight}
               >
                 Clock Out
@@ -197,15 +197,15 @@ const EmployeeDashboard = () => {
         {/* Quick KPI stats card */}
         <Card title="Quick Summary" className="h-full">
           <div className="grid grid-cols-2 gap-4">
-            <div className="p-4 bg-slate-50 rounded-xl">
-              <span className="text-slate-400 text-xs font-bold uppercase tracking-wider">Salary (Aug)</span>
-              <p className="text-xl font-extrabold text-slate-800 mt-1">
+            <div className="p-4 bg-paper-bg border-2 border-border shadow-shadow rounded-base transition-all duration-300 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]">
+              <span className="text-paper-muted text-[10px] font-bold uppercase tracking-wider">Salary (Aug)</span>
+              <p className="text-[16px] font-extrabold text-paper-text mt-1">
                 {recentPayroll ? `$${parseFloat(recentPayroll.net_salary).toFixed(2)}` : 'N/A'}
               </p>
             </div>
-            <div className="p-4 bg-slate-50 rounded-xl">
-              <span className="text-slate-400 text-xs font-bold uppercase tracking-wider">Job Role</span>
-              <p className="text-sm font-extrabold text-slate-700 truncate mt-2.5">
+            <div className="p-4 bg-paper-bg border-2 border-border shadow-shadow rounded-base transition-all duration-300 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]">
+              <span className="text-paper-muted text-[10px] font-bold uppercase tracking-wider">Job Role</span>
+              <p className="text-[13px] font-extrabold text-paper-text truncate mt-1">
                 {user?.jobTitle || 'Unassigned'}
               </p>
             </div>
@@ -219,17 +219,17 @@ const EmployeeDashboard = () => {
         
         {/* Recent Leaves Card */}
         <Card 
-          title="Recent Leaves & Time-off" 
+          title="Recent Leaves" 
           subtitle="View status of your submissions"
           actions={
-            <Button variant="outline" size="sm" onClick={() => window.location.href='/leaves'}>
-              Apply/View All
+            <Button variant="secondary" size="sm" onClick={() => window.location.href='/leaves'}>
+              View All
             </Button>
           }
         >
-          <div className="space-y-4">
+          <div className="space-y-3">
             {recentLeaves.length === 0 ? (
-              <p className="text-sm text-slate-400 text-center py-6">No recent leave applications.</p>
+              <p className="text-[13px] text-paper-muted text-center py-6">No recent leave applications.</p>
             ) : (
               recentLeaves.map((leave) => {
                 const badgeType = 
@@ -237,10 +237,10 @@ const EmployeeDashboard = () => {
                   leave.status === 'rejected' ? 'danger' : 'warning';
                 
                 return (
-                  <div key={leave.id} className="flex items-center justify-between p-3.5 border border-slate-100 rounded-xl hover:bg-slate-50/50 transition-all">
+                  <div key={leave.id} className="flex items-center justify-between p-3.5 bg-paper-bg border-2 border-border shadow-shadow rounded-base transition-all duration-300 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]">
                     <div>
-                      <h4 className="text-sm font-bold text-slate-700 uppercase tracking-tight">{leave.leave_type} Leave</h4>
-                      <p className="text-xs text-slate-400 mt-0.5">
+                      <h4 className="text-[13px] font-bold text-paper-text tracking-tight uppercase">{leave.leave_type} Leave</h4>
+                      <p className="text-[11px] text-paper-muted mt-0.5">
                         {new Date(leave.start_date).toLocaleDateString()} to {new Date(leave.end_date).toLocaleDateString()}
                       </p>
                     </div>
@@ -254,17 +254,17 @@ const EmployeeDashboard = () => {
 
         {/* Recent Attendance Log Card */}
         <Card 
-          title="Recent Attendance Logs" 
+          title="Recent Attendance" 
           subtitle="Showing clock logs for the current week"
           actions={
-            <Button variant="outline" size="sm" onClick={() => window.location.href='/attendance'}>
-              View Attendance
+            <Button variant="secondary" size="sm" onClick={() => window.location.href='/attendance'}>
+              View Log
             </Button>
           }
         >
-          <div className="divide-y divide-slate-100">
+          <div className="space-y-3">
             {attendanceLogs.length === 0 ? (
-              <p className="text-sm text-slate-400 text-center py-6">No clock records logged.</p>
+              <p className="text-[13px] text-paper-muted text-center py-6">No clock records logged.</p>
             ) : (
               attendanceLogs.map((log) => {
                 const badgeType = 
@@ -273,13 +273,13 @@ const EmployeeDashboard = () => {
                   log.status === 'leave' ? 'info' : 'danger';
                 
                 return (
-                  <div key={log.id} className="flex items-center justify-between py-3">
+                  <div key={log.id} className="flex items-center justify-between p-3.5 bg-paper-bg border-2 border-border shadow-shadow rounded-base transition-all duration-300 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]">
                     <div className="space-y-0.5">
-                      <p className="text-sm font-bold text-slate-700">
+                      <p className="text-[13px] font-bold text-paper-text">
                         {new Date(log.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                       </p>
-                      <p className="text-xs text-slate-400">
-                        Clock: {formatTime(log.check_in)} — {formatTime(log.check_out)}
+                      <p className="text-[11px] text-paper-muted">
+                        {formatTime(log.check_in)} - {formatTime(log.check_out)}
                       </p>
                     </div>
                     <Badge type={badgeType}>{log.status}</Badge>

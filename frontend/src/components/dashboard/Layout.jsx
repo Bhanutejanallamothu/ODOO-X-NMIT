@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { 
   LayoutDashboard, 
@@ -9,18 +9,16 @@ import {
   CreditCard, 
   LogOut, 
   Users, 
-  CalendarCheck, 
-  Menu, 
-  X,
+  CalendarCheck,
   Bell,
   Shield
 } from 'lucide-react';
-import Badge from '../common/Badge';
+import { LimelightNav } from '../ui/LimelightNav';
 
 const Layout = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
@@ -28,59 +26,50 @@ const Layout = () => {
   };
 
   const employeeLinks = [
-    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'My Profile', path: '/profile', icon: User },
-    { name: 'My Attendance', path: '/attendance', icon: CalendarDays },
-    { name: 'My Leaves', path: '/leaves', icon: CalendarCheck },
-    { name: 'My Payroll', path: '/payroll', icon: CreditCard },
+    { id: 'dashboard', name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard /> },
+    { id: 'profile', name: 'My Profile', path: '/profile', icon: <User /> },
+    { id: 'attendance', name: 'My Attendance', path: '/attendance', icon: <CalendarDays /> },
+    { id: 'leaves', name: 'My Leaves', path: '/leaves', icon: <CalendarCheck /> },
+    { id: 'payroll', name: 'My Payroll', path: '/payroll', icon: <CreditCard /> },
   ];
 
   const adminLinks = [
-    { name: 'HR Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'Employees', path: '/employees', icon: Users },
-    { name: 'Attendance Logs', path: '/attendance-logs', icon: CalendarDays },
-    { name: 'Leave Requests', path: '/leave-requests', icon: CalendarCheck },
-    { name: 'Payroll Sheet', path: '/payroll-sheet', icon: FileSpreadsheet },
-    { name: 'Audit Logs', path: '/audit-logs', icon: Shield },
+    { id: 'dashboard', name: 'HR Dashboard', path: '/dashboard', icon: <LayoutDashboard /> },
+    { id: 'employees', name: 'Employees', path: '/employees', icon: <Users /> },
+    { id: 'attendance-logs', name: 'Attendance Logs', path: '/attendance-logs', icon: <CalendarDays /> },
+    { id: 'leave-requests', name: 'Leave Requests', path: '/leave-requests', icon: <CalendarCheck /> },
+    { id: 'payroll-sheet', name: 'Payroll Sheet', path: '/payroll-sheet', icon: <FileSpreadsheet /> },
+    { id: 'audit-logs', name: 'Audit Logs', path: '/audit-logs', icon: <Shield /> },
   ];
 
   const links = user?.role === 'admin' ? adminLinks : employeeLinks;
 
+  const currentPath = location.pathname;
+  const activeIndex = Math.max(
+    0,
+    links.findIndex((link) => currentPath.includes(link.path))
+  );
+
+  const navItems = links.map((link) => ({
+    id: link.id,
+    icon: link.icon,
+    label: link.name,
+    onClick: () => navigate(link.path),
+  }));
+
   return (
-    <div className="flex min-h-screen bg-slate-50">
-      {/* Mobile Sidebar Overlay */}
-      {sidebarOpen && (
-        <div 
-          className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* Sidebar Navigation */}
-      <aside 
-        className={`fixed inset-y-0 left-0 z-50 flex flex-col w-64 bg-white border-r border-slate-100 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:z-auto ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
-      >
-        {/* Sidebar Header / Logo */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
-          <div className="flex items-center space-x-2.5">
-            <div className="bg-brand-600 p-2 rounded-xl text-white shadow-lg shadow-brand-500/20">
-              <span className="font-extrabold text-base tracking-wider">DF</span>
-            </div>
-            <div>
-              <span className="font-extrabold text-xl text-slate-800 tracking-tight">Dayflow</span>
-              <p className="text-[10px] text-slate-400 font-semibold tracking-wider uppercase -mt-0.5">HRMS</p>
-            </div>
+    <div className="flex flex-col min-h-screen bg-transparent relative pt-4">
+      {/* Header */}
+      <header className="bg-paper-surface border-b border-paper-border flex items-center justify-between px-6 lg:px-8 py-3.5 z-10 sticky top-0">
+        <div className="flex items-center space-x-4">
+          <div className="bg-brand-600 p-[7px] rounded-[8px] text-white shadow-paper-sm flex items-center justify-center">
+            <span className="font-extrabold text-[15px] tracking-wider">DF</span>
           </div>
-          <button 
-            className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-50 lg:hidden"
-            onClick={() => setSidebarOpen(false)}
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-
+          <div>
+            <h1 className="text-[15px] font-bold text-paper-text tracking-tight">
+              Dayflow
+            </h1>
+            <p className="text-[10px] text-paper-muted font-bold tracking-widest uppercase">HRMS</p>
         {/* User Card */}
         <div className="px-6 py-5 border-b border-slate-100 flex items-center space-x-3 bg-slate-50/50">
           {user?.profilePicture ? (
@@ -101,86 +90,57 @@ const Layout = () => {
           </div>
         </div>
 
-        {/* Links Navigation */}
-        <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
-          {links.map((link) => (
-            <NavLink
-              key={link.path}
-              to={link.path}
-              onClick={() => setSidebarOpen(false)}
-              className={({ isActive }) => 
-                `flex items-center px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-150 ${
-                  isActive 
-                    ? 'bg-brand-50 text-brand-700' 
-                    : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
-                }`
-              }
-            >
-              {({ isActive }) => {
-                const Icon = link.icon;
-                return (
-                  <>
-                    <Icon className={`mr-3 h-5 w-5 ${isActive ? 'text-brand-600' : 'text-slate-400'}`} />
-                    {link.name}
-                  </>
-                );
-              }}
-            </NavLink>
-          ))}
-        </nav>
-
-        {/* Logout Section */}
-        <div className="p-4 border-t border-slate-100">
-          <button
-            onClick={handleLogout}
-            className="flex items-center w-full px-4 py-3 text-sm font-bold text-rose-500 hover:bg-rose-50 rounded-xl transition-all"
-          >
-            <LogOut className="mr-3 h-5 w-5 text-rose-400" />
-            Logout
-          </button>
+        {/* Top Nav (Centered) */}
+        <div className="hidden md:block absolute left-1/2 -translate-x-1/2">
+          <LimelightNav 
+            items={navItems}
+            defaultActiveIndex={activeIndex}
+          />
         </div>
-      </aside>
 
-      {/* Main Workspace Panel */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Header Header */}
-        <header className="bg-white border-b border-slate-100 flex items-center justify-between px-6 py-4">
-          <div className="flex items-center">
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="p-2 -ml-2 mr-3 rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-50 lg:hidden"
-            >
-              <Menu className="h-5 w-5" />
-            </button>
-            <h1 className="text-lg font-bold text-slate-800 tracking-tight">
-              Welcome back, {user?.name?.split(' ')[0]}!
-            </h1>
-          </div>
+        <div className="flex items-center space-x-4">
+          {/* Notification Bell */}
+          <button className="p-1.5 rounded-md text-paper-muted hover:text-paper-text hover:bg-paper-raised hover:shadow-paper-inset transition-all relative">
+            <Bell className="h-[18px] w-[18px]" />
+            <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-brand-500"></span>
+          </button>
+          
+          <div className="h-6 w-px bg-white/40 hidden sm:block"></div>
 
+          {/* User Section */}
           <div className="flex items-center space-x-3">
-            {/* Notification Bell (Visual Only) */}
-            <button className="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-50 relative">
-              <Bell className="h-5 w-5" />
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-brand-500 ring-2 ring-white"></span>
-            </button>
-            
-            <div className="h-8 w-px bg-slate-100 hidden sm:block"></div>
-            
-            {/* Role Header Badge */}
-            <div className="hidden sm:flex items-center space-x-2">
-              <span className="text-xs text-slate-400 font-medium">Role Access:</span>
-              <span className="text-xs font-bold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-md uppercase tracking-wider">
-                {user?.role} Mode
-              </span>
+            <div className="hidden sm:block text-right">
+              <h4 className="text-[13px] font-bold text-paper-text leading-tight">{user?.name}</h4>
+              <span className="text-[9px] font-bold uppercase tracking-wider text-paper-muted">{user?.role} Mode</span>
             </div>
+            <div className="h-9 w-9 rounded-full bg-paper-raised border border-paper-border shadow-paper-sm flex items-center justify-center text-paper-text font-bold shrink-0 text-sm">
+              {user?.name ? user.name.split(' ').map(n=>n[0]).join('').toUpperCase() : 'U'}
+            </div>
+            
+            <button
+              onClick={handleLogout}
+              className="p-1.5 ml-2 rounded-md text-rose-400 hover:text-rose-500 hover:bg-rose-50 transition-colors"
+              title="Logout"
+            >
+              <LogOut className="h-[18px] w-[18px]" />
+            </button>
           </div>
-        </header>
+        </div>
+      </header>
 
-        {/* Content Workspace */}
-        <main className="flex-1 overflow-y-auto p-6 md:p-8">
-          <Outlet />
-        </main>
+      {/* Mobile Top Nav */}
+      <div className="md:hidden flex justify-center w-full py-4 bg-transparent z-10 sticky top-[65px] border-b border-paper-border">
+        <LimelightNav 
+          items={navItems}
+          defaultActiveIndex={activeIndex}
+          className="scale-90"
+        />
       </div>
+
+      {/* Content Workspace */}
+      <main className="flex-1 overflow-y-auto p-6 md:p-8 lg:px-10">
+        <Outlet />
+      </main>
     </div>
   );
 };

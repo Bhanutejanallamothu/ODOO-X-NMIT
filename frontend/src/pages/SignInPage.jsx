@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Eye, EyeOff } from 'lucide-react';
+import './Auth.css';
 
 const SignInPage = () => {
   const { login } = useAuth();
@@ -11,7 +11,6 @@ const SignInPage = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [generalError, setGeneralError] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -52,88 +51,67 @@ const SignInPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#EBEBEB] px-4 py-12 font-sans">
-      <div className="w-full max-w-[420px] z-10">
-        {/* Branding header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex bg-black p-3 rounded-xl text-white shadow-[4px_4px_10px_rgba(0,0,0,0.15)] mb-4">
-            <span className="font-extrabold text-[18px] tracking-wider">DF</span>
-          </div>
-          <h2 className="text-[28px] font-bold text-black tracking-tight">Welcome to Dayflow</h2>
-          <p className="text-[11px] text-[#555555] font-semibold tracking-wide uppercase mt-1">Every workday, perfectly aligned</p>
-        </div>
+    <div className="auth-container">
+      <form className="auth-form" onSubmit={handleSubmit} autoComplete="off">
+        <div className="form-inner">
+          <h2 className="auth-h2">User Login</h2>
 
-        {/* Auth Card */}
-        <div className="bg-[#F0F0F0] p-8 rounded-xl border border-[rgba(255,255,255,0.8)] shadow-[8px_8px_18px_rgba(0,0,0,0.1),-6px_-6px_14px_rgba(255,255,255,0.9)]">
-          <h3 className="text-[18px] font-bold text-black mb-6 text-center">Sign In</h3>
+          {generalError && <div className="auth-general-error">{generalError}</div>}
 
-          {generalError && (
-            <div className="mb-6 p-4 rounded-xl bg-[#F0F0F0] shadow-[inset_2px_2px_5px_rgba(0,0,0,0.08),inset_-2px_-2px_5px_rgba(255,255,255,0.75)] border border-[rgba(255,255,255,0.8)] text-[12px] font-bold text-black leading-relaxed text-center">
-              {generalError}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="flex flex-col space-y-1.5 w-full">
-              <label htmlFor="email" className="text-[12px] font-bold text-[#555555]">Email Address</label>
+          <div className="input-wrapper">
+            <label className="auth-label" htmlFor="email">Email</label>
+            <div className="input-group">
+              <span className="icon">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
+                </svg>
+              </span>
               <input
+                type="email"
                 id="email"
                 name="email"
-                type="email"
-                placeholder="name@company.com"
                 value={formData.email}
                 onChange={handleChange}
+                data-lpignore="true"
                 required
-                className="w-full h-[40px] px-3.5 bg-[#F0F0F0] rounded-md border border-[rgba(255,255,255,0.8)] shadow-[inset_2px_2px_5px_rgba(0,0,0,0.08),inset_-2px_-2px_5px_rgba(255,255,255,0.75)] text-[13px] text-black focus:outline-none focus:border-black/40 focus:ring-1 focus:ring-black/20 transition-all placeholder:text-[#888888]"
               />
-              {errors.email && <span className="text-[11px] text-black font-extrabold">{errors.email}</span>}
             </div>
-            
-            <div className="flex flex-col space-y-1.5 w-full">
-              <div className="flex justify-between items-center">
-                <label htmlFor="password" className="text-[12px] font-bold text-[#555555]">Password</label>
-                <Link to="/forgot-password" className="text-[11px] font-bold text-black hover:underline transition-colors">Forgot Password?</Link>
-              </div>
-              <div className="relative w-full">
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="••••••••"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  className="w-full h-[40px] pl-3.5 pr-10 bg-[#F0F0F0] rounded-md border border-[rgba(255,255,255,0.8)] shadow-[inset_2px_2px_5px_rgba(0,0,0,0.08),inset_-2px_-2px_5px_rgba(255,255,255,0.75)] text-[13px] text-black focus:outline-none focus:border-black/40 focus:ring-1 focus:ring-black/20 transition-all placeholder:text-[#888888]"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#888888] hover:text-black transition-colors focus:outline-none"
-                >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
-              </div>
-              {errors.password && <span className="text-[11px] text-black font-extrabold">{errors.password}</span>}
-            </div>
+            {errors.email && <span className="auth-error">{errors.email}</span>}
+          </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full h-[42px] mt-2 bg-[#F0F0F0] text-black font-bold text-[13px] rounded-lg border border-[rgba(255,255,255,0.8)] shadow-[4px_4px_10px_rgba(0,0,0,0.1),-4px_-4px_10px_rgba(255,255,255,0.9)] hover:shadow-[2px_2px_5px_rgba(0,0,0,0.1),-2px_-2px_5px_rgba(255,255,255,0.9)] active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.08),inset_-2px_-2px_5px_rgba(255,255,255,0.75)] active:border-transparent transition-all flex items-center justify-center disabled:opacity-50"
-            >
-              {loading ? 'Signing In...' : 'Sign In'}
+          <div className="input-wrapper">
+            <label className="auth-label" htmlFor="password">Password</label>
+            <div className="input-group">
+              <span className="icon">
+                <svg viewBox="0 0 24 24">
+                  <path d="M11.83,1.73C8.43,1.79 6.23,3.32 6.23,3.32C5.95,3.5 5.88,3.91 6.07,4.19C6.27,4.5 6.66,4.55 6.96,4.34C6.96,4.34 11.27,1.15 17.46,4.38C17.75,4.55 18.14,4.45 18.31,4.15C18.5,3.85 18.37,3.47 18.03,3.28C16.36,2.4 14.78,1.96 13.36,1.8C12.83,1.74 12.32,1.72 11.83,1.73M12.22,4.34C6.26,4.26 3.41,9.05 3.41,9.05C3.22,9.34 3.3,9.72 3.58,9.91C3.87,10.1 4.26,10 4.5,9.68C4.5,9.68 6.92,5.5 12.2,5.59C17.5,5.66 19.82,9.65 19.82,9.65C20,9.94 20.38,10.04 20.68,9.87C21,9.69 21.07,9.31 20.9,9C20.9,9 18.15,4.42 12.22,4.34M11.5,6.82C9.82,6.94 8.21,7.55 7,8.56C4.62,10.53 3.1,14.14 4.77,19C4.88,19.33 5.24,19.5 5.57,19.39C5.89,19.28 6.07,18.92 5.95,18.6V18.6C4.41,14.13 5.78,11.2 7.8,9.5C9.77,7.89 13.25,7.5 15.84,9.1C17.11,9.9 18.1,11.28 18.6,12.64C19.11,14 19.08,15.32 18.67,15.94C18.25,16.59 17.4,16.83 16.65,16.64C15.9,16.45 15.29,15.91 15.26,14.77C15.23,13.06 13.89,12 12.5,11.84C11.16,11.68 9.61,12.4 9.21,14C8.45,16.92 10.36,21.07 14.78,22.45C15.11,22.55 15.46,22.37 15.57,22.04C15.67,21.71 15.5,21.35 15.15,21.25C11.32,20.06 9.87,16.43 10.42,14.29C10.66,13.33 11.5,13 12.38,13.08C13.25,13.18 14,13.7 14,14.79C14.05,16.43 15.12,17.54 16.34,17.85C17.56,18.16 18.97,17.77 19.72,16.62C20.5,15.45 20.37,13.8 19.78,12.21C19.18,10.61 18.07,9.03 16.5,8.04C14.96,7.08 13.19,6.7 11.5,6.82M11.86,9.25V9.26C10.08,9.32 8.3,10.24 7.28,12.18C5.96,14.67 6.56,17.21 7.44,19.04C8.33,20.88 9.54,22.1 9.54,22.1C9.78,22.35 10.17,22.35 10.42,22.11C10.67,21.87 10.67,21.5 10.43,21.23C10.43,21.23 9.36,20.13 8.57,18.5C7.78,16.87 7.3,14.81 8.38,12.77C9.5,10.67 11.5,10.16 13.26,10.67C15.04,11.19 16.53,12.74 16.5,15.03C16.46,15.38 16.71,15.68 17.06,15.7C17.4,15.73 17.7,15.47 17.73,15.06C17.79,12.2 15.87,10.13 13.61,9.47C13.04,9.31 12.45,9.23 11.86,9.25M12.08,14.25C11.73,14.26 11.46,14.55 11.47,14.89C11.47,14.89 11.5,16.37 12.31,17.8C13.15,19.23 14.93,20.59 18.03,20.3C18.37,20.28 18.64,20 18.62,19.64C18.6,19.29 18.3,19.03 17.91,19.06C15.19,19.31 14.04,18.28 13.39,17.17C12.74,16.07 12.72,14.88 12.72,14.88C12.72,14.53 12.44,14.25 12.08,14.25Z" />
+                </svg>
+              </span>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                data-lpignore="true"
+                required
+              />
+            </div>
+            {errors.password && <span className="auth-error">{errors.password}</span>}
+          </div>
+
+          <div className="btn-group">
+            <button type="submit" disabled={loading} className="auth-btn btn--primary">
+              {loading ? 'Signing in...' : 'Sign in'}
             </button>
-          </form>
+            <Link className="auth-btn btn--text" to="/forgot-password">Forgot password?</Link>
+          </div>
 
-          {/* Nav option */}
-          <div className="mt-8 text-center text-[12px] font-semibold text-[#555555]">
-            Don't have an account?{' '}
-            <Link to="/signup" className="text-black font-bold underline hover:text-[#555555] transition-colors ml-1">
-              Request access / Register
-            </Link>
+          <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+            <Link className="auth-link" style={{ fontSize: '0.8rem', fontWeight: 'bold' }} to="/signup">Don't have an account? Sign Up</Link>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

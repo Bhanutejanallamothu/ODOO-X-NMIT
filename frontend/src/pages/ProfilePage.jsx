@@ -101,14 +101,14 @@ const ProfilePage = () => {
     <div className="max-w-3xl mx-auto space-y-6 animate-in fade-in duration-200">
       
       {error && (
-        <div className="p-4 bg-rose-50 border border-rose-100 text-xs font-semibold text-rose-600 rounded-xl flex items-center space-x-2">
+        <div className="p-4 bg-rose-50 border border-rose-100 text-[13px] font-semibold text-rose-600 rounded-[10px] flex items-center space-x-2">
           <AlertCircle className="h-4 w-4 shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
       {success && (
-        <div className="p-4 bg-emerald-50 border border-emerald-100 text-xs font-semibold text-emerald-600 rounded-xl flex items-center space-x-2">
+        <div className="p-4 bg-emerald-50 border border-emerald-100 text-[13px] font-semibold text-emerald-600 rounded-[10px] flex items-center space-x-2">
           <CheckCircle className="h-4 w-4 shrink-0" />
           <span>{success}</span>
         </div>
@@ -125,7 +125,7 @@ const ProfilePage = () => {
             </Button>
           ) : (
             <div className="flex space-x-2">
-              <Button variant="outline" size="sm" onClick={() => { setEditMode(false); setError(''); }}>
+              <Button variant="secondary" size="sm" onClick={() => { setEditMode(false); setError(''); }}>
                 Cancel
               </Button>
             </div>
@@ -137,6 +137,9 @@ const ProfilePage = () => {
             
             {/* Header info */}
             <div className="flex items-center space-x-4">
+              <div className="h-[60px] w-[60px] rounded-base bg-paper-surface border-2 border-border shadow-shadow flex items-center justify-center text-paper-text font-extrabold text-[22px] transition-all duration-300 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]">
+                {profile?.name ? profile.name.split(' ').map(n=>n[0]).join('').toUpperCase() : 'U'}
+              </div>
               {profile?.profile_picture ? (
                 <img src={profile.profile_picture} alt="Profile" className="h-16 w-16 rounded-full object-cover border-2 border-slate-100 shadow-sm shrink-0" />
               ) : (
@@ -145,47 +148,47 @@ const ProfilePage = () => {
                 </div>
               )}
               <div>
-                <h2 className="text-xl font-bold text-slate-800">{profile?.name}</h2>
-                <div className="flex items-center space-x-2 text-sm text-slate-400 mt-1 font-semibold">
-                  <Briefcase className="h-4 w-4" />
+                <h2 className="text-[18px] font-bold text-paper-text">{profile?.name}</h2>
+                <div className="flex items-center space-x-2 text-[13px] text-paper-muted mt-1 font-semibold">
+                  <Briefcase className="h-[14px] w-[14px]" />
                   <span>{profile?.job_title || 'Unassigned'} — {profile?.department || 'No Department'}</span>
                 </div>
               </div>
             </div>
 
-            <hr className="border-slate-100" />
+            <hr className="border-white/40" />
 
             {/* Read-Only Details */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-              <div className="flex items-center space-x-3 text-slate-600">
-                <Mail className="h-5 w-5 text-slate-400 shrink-0" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-[13px]">
+              <div className="flex items-start space-x-3 text-paper-text">
+                <Mail className="h-[18px] w-[18px] text-paper-muted shrink-0 mt-0.5" />
                 <div>
-                  <span className="text-xs font-bold text-slate-400 block uppercase tracking-wider">Email Address</span>
-                  <span className="font-semibold">{profile?.email}</span>
+                  <span className="text-[10px] font-bold text-paper-muted block uppercase tracking-widest">Email Address</span>
+                  <span className="font-bold">{profile?.email}</span>
                 </div>
               </div>
 
-              <div className="flex items-center space-x-3 text-slate-600">
-                <Phone className="h-5 w-5 text-slate-400 shrink-0" />
+              <div className="flex items-start space-x-3 text-paper-text">
+                <Phone className="h-[18px] w-[18px] text-paper-muted shrink-0 mt-0.5" />
                 <div>
-                  <span className="text-xs font-bold text-slate-400 block uppercase tracking-wider">Contact Number</span>
-                  <span className="font-semibold">{profile?.phone || 'Not provided'}</span>
+                  <span className="text-[10px] font-bold text-paper-muted block uppercase tracking-widest">Contact Number</span>
+                  <span className="font-bold">{profile?.phone || 'Not provided'}</span>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-3 text-slate-600">
-                <MapPin className="h-5 w-5 text-slate-400 shrink-0 mt-0.5" />
+              <div className="flex items-start space-x-3 text-paper-text">
+                <MapPin className="h-[18px] w-[18px] text-paper-muted shrink-0 mt-0.5" />
                 <div>
-                  <span className="text-xs font-bold text-slate-400 block uppercase tracking-wider">Home Address</span>
-                  <span className="font-semibold">{profile?.address || 'Not provided'}</span>
+                  <span className="text-[10px] font-bold text-paper-muted block uppercase tracking-widest">Home Address</span>
+                  <span className="font-bold">{profile?.address || 'Not provided'}</span>
                 </div>
               </div>
 
-              <div className="flex items-center space-x-3 text-slate-600">
-                <User className="h-5 w-5 text-slate-400 shrink-0" />
+              <div className="flex items-start space-x-3 text-paper-text">
+                <User className="h-[18px] w-[18px] text-paper-muted shrink-0 mt-0.5" />
                 <div>
-                  <span className="text-xs font-bold text-slate-400 block uppercase tracking-wider">Employee Code</span>
-                  <span className="font-semibold">#{profile?.employee_id}</span>
+                  <span className="text-[10px] font-bold text-paper-muted block uppercase tracking-widest">Employee Code</span>
+                  <span className="font-bold">#{profile?.employee_id}</span>
                 </div>
               </div>
             </div>
