@@ -17,8 +17,8 @@ const applyLeave = async (req, res, next) => {
 
     const result = await db.query(
       `INSERT INTO leaves (user_id, leave_type, start_date, end_date, remarks, status) 
-       VALUES ($1, $2, $3, $4, $5, 'pending') 
-       RETURNING *`,
+       VALUES (?, ?, ?, ?, ?, 'pending') 
+       `,
       [userId, leaveType, startDate, endDate, remarks]
     );
 
@@ -35,7 +35,7 @@ const applyLeave = async (req, res, next) => {
 const getMyLeaves = async (req, res, next) => {
   try {
     const result = await db.query(
-      'SELECT * FROM leaves WHERE user_id = $1 ORDER BY start_date DESC',
+      'SELECT * FROM leaves WHERE user_id = ? ORDER BY start_date DESC',
       [req.user.id]
     );
     res.status(200).json({ success: true, leaves: result.rows });
@@ -74,7 +74,7 @@ const updateLeaveStatus = async (req, res, next) => {
        FROM leaves l 
        JOIN users u ON l.user_id = u.id 
        JOIN profiles p ON u.id = p.user_id 
-       WHERE l.id = $1`,
+       WHERE l.id = ?`,
       [leaveId]
     );
 
@@ -87,9 +87,9 @@ const updateLeaveStatus = async (req, res, next) => {
     // 2. Update the leave request status
     const updateRes = await db.query(
       `UPDATE leaves 
-       SET status = $1, admin_comments = $2 
-       WHERE id = $3 
-       RETURNING *`,
+       SET status = ?, admin_comments = ? 
+       WHERE id = ? 
+       `,
       [status, adminComments || null, leaveId]
     );
 
@@ -106,20 +106,20 @@ const updateLeaveStatus = async (req, res, next) => {
         try {
           // Check if attendance record exists for this date
           const attCheck = await db.query(
-            'SELECT id FROM attendance WHERE user_id = $1 AND date = $2',
+            'SELECT id FROM attendance WHERE user_id = ? AND date = ?',
             [leave.user_id, dateStr]
           );
 
           if (attCheck.rowCount > 0) {
             // Update to leave status
             await db.query(
-              "UPDATE attendance SET status = 'leave', check_in = NULL, check_out = NULL WHERE user_id = $1 AND date = $2",
+              "UPDATE attendance SET status = 'leave', check_in = NULL, check_out = NULL WHERE user_id = ? AND date = ?",
               [leave.user_id, dateStr]
             );
           } else {
             // Insert new leave record in attendance
             await db.query(
-              "INSERT INTO attendance (user_id, date, status, check_in, check_out) VALUES ($1, $2, 'leave', NULL, NULL)",
+              "INSERT INTO attendance (user_id, date, status, check_in, check_out) VALUES (?, ?, 'leave', NULL, NULL)",
               [leave.user_id, dateStr]
             );
           }

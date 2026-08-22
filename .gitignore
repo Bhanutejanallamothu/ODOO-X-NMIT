@@ -53,3 +53,4 @@ out/
 
 # Logs
 log.txt
+backend/.env
