@@ -1,109 +1,96 @@
-const { Pool, Client } = require('pg');
+const mysql = require('mysql2/promise');
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
-const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/dayflow';
+const connectionString = process.env.DATABASE_URL;
 
-// Parse the connection string to extract user, password, host, port, and database
-// Format: postgresql://[user[:password]@]host[:port][/database]
-const parseConnectionString = (str) => {
-  try {
-    const url = new URL(str);
-    return {
-      user: url.username,
-      password: url.password,
-      host: url.hostname,
-      port: url.port || '5432',
-      database: url.pathname.slice(1) || 'dayflow'
-    };
-  } catch (err) {
-    console.error('Failed to parse DATABASE_URL, using defaults', err);
-    return {
-      user: 'postgres',
-      password: 'postgres',
-      host: 'localhost',
-      port: '5432',
-      database: 'dayflow'
-    };
-  }
+const dbConfig = {
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  host: process.env.DB_HOST || 'localhost',
+  port: process.env.DB_PORT || '3306',
+  database: process.env.DB_NAME || 'dayflow'
 };
 
-const dbConfig = parseConnectionString(connectionString);
-
-// Create a pool pointing to the target database
-const pool = new Pool({
-  connectionString: connectionString,
+const pool = mysql.createPool({
+  host: dbConfig.host,
+  user: dbConfig.user,
+  password: dbConfig.password,
+  database: dbConfig.database,
+  port: dbConfig.port,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  multipleStatements: true
 });
 
-const initDB = async () => {
-  // 1. Try to connect to 'postgres' default database to check/create the target database
-  const clientConfig = { ...dbConfig, database: 'postgres' };
-  const client = new Client(clientConfig);
-
-  try {
-    await client.connect();
-    const res = await client.query(`SELECT 1 FROM pg_database WHERE datname = $1`, [dbConfig.database]);
-    
-    if (res.rowCount === 0) {
-      console.log(`Database '${dbConfig.database}' does not exist. Creating...`);
-      // CREATE DATABASE cannot be run inside a transaction/prepared statement easily in pg
-      await client.query(`CREATE DATABASE ${dbConfig.database}`);
-      console.log(`Database '${dbConfig.database}' created successfully.`);
-    } else {
-      console.log(`Database '${dbConfig.database}' already exists.`);
-    }
-  } catch (err) {
-    console.error('Error checking/creating database:', err.message);
-  } finally {
-    await client.end();
+const queryWrapper = async (text, params) => {
+  const cleanText = text.replace(/RETURNING\s+.*$/i, '');
+  const [rows, fields] = await pool.query(cleanText, params);
+  
+  if (rows && rows.insertId !== undefined) {
+    return {
+      rowCount: rows.affectedRows,
+      insertId: rows.insertId,
+      rows: [ { id: rows.insertId } ]
+    };
   }
+  
+  return {
+    rows: rows,
+    rowCount: rows.length
+  };
+};
 
-  // 2. Connect to the target database and run schema/seed if tables don't exist
-  const targetClient = new Client({ connectionString });
+const initDB = async () => {
   try {
-    await targetClient.connect();
+    const connection = await mysql.createConnection({
+      host: dbConfig.host,
+      user: dbConfig.user,
+      password: dbConfig.password,
+      port: dbConfig.port,
+      multipleStatements: true
+    });
+
+    console.log(`Checking if database '${dbConfig.database}' exists...`);
+    await connection.query(`CREATE DATABASE IF NOT EXISTS \`${dbConfig.database}\``);
+    console.log(`Database '${dbConfig.database}' checked/created successfully.`);
     
-    // Check if a core table (e.g., 'users') exists
-    const tableCheck = await targetClient.query(`
-      SELECT EXISTS (
-        SELECT FROM information_schema.tables 
-        WHERE table_schema = 'public' 
-        AND table_name = 'users'
-      );
-    `);
+    await connection.changeUser({ database: dbConfig.database });
+    
+    const [tableCheck] = await connection.query(
+      `SELECT count(*) as count FROM information_schema.tables WHERE table_schema = ? AND table_name = 'users'`,
+      [dbConfig.database]
+    );
 
-    const usersTableExists = tableCheck.rows[0].exists;
-
-    if (!usersTableExists) {
+    if (tableCheck[0].count === 0) {
       console.log('Tables do not exist. Initializing schema...');
       
-      // Read schema file
       const schemaPath = path.join(__dirname, '../../../database/schema.sql');
       const schemaSql = fs.readFileSync(schemaPath, 'utf8');
-      await targetClient.query(schemaSql);
+      await connection.query(schemaSql);
       console.log('Database schema created successfully.');
 
-      // Check if we should seed (we always seed if it's a fresh schema)
       const seedPath = path.join(__dirname, '../../../database/seed-data/seed.sql');
       if (fs.existsSync(seedPath)) {
         console.log('Seeding initial data...');
         const seedSql = fs.readFileSync(seedPath, 'utf8');
-        await targetClient.query(seedSql);
+        await connection.query(seedSql);
         console.log('Database seeded successfully.');
       }
     } else {
       console.log('Tables already exist. Skipping database initialization.');
     }
+    
+    await connection.end();
   } catch (err) {
-    console.error('Error initializing tables:', err);
-  } finally {
-    await targetClient.end();
+    console.error('Error initializing database:', err);
   }
 };
 
 module.exports = {
   pool,
-  query: (text, params) => pool.query(text, params),
+  query: queryWrapper,
   initDB
 };
