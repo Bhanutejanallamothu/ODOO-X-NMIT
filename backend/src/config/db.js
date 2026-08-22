@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
-const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/dayflow';
+const connectionString = process.env.DATABASE_URL ;
 
 // Parse the connection string to extract user, password, host, port, and database
 // Format: postgresql://[user[:password]@]host[:port][/database]
