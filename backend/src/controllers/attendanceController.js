@@ -9,7 +9,7 @@ const checkIn = async (req, res, next) => {
 
     // Check if user already checked in today
     const checkResult = await db.query(
-      'SELECT id, check_in FROM attendance WHERE user_id = $1 AND date = $2',
+      'SELECT id, check_in FROM attendance WHERE user_id = ? AND date = ?',
       [userId, today]
     );
 
@@ -23,15 +23,16 @@ const checkIn = async (req, res, next) => {
     // Insert new check-in
     const result = await db.query(
       `INSERT INTO attendance (user_id, date, check_in, status) 
-       VALUES ($1, $2, $3, 'present') 
-       RETURNING *`,
+       VALUES (?, ?, ?, 'present')`,
       [userId, today, now]
     );
+
+    const newAttendance = await db.query('SELECT * FROM attendance WHERE id = ?', [result.insertId]);
 
     res.status(200).json({
       success: true,
       message: 'Checked in successfully!',
-      attendance: result.rows[0]
+      attendance: newAttendance.rows[0]
     });
   } catch (err) {
     next(err);
@@ -46,7 +47,7 @@ const checkOut = async (req, res, next) => {
 
     // Check if user has checked in today
     const checkResult = await db.query(
-      'SELECT id, check_in, check_out FROM attendance WHERE user_id = $1 AND date = $2',
+      'SELECT id, check_in, check_out FROM attendance WHERE user_id = ? AND date = ?',
       [userId, today]
     );
 
@@ -77,16 +78,17 @@ const checkOut = async (req, res, next) => {
     // Update check-out
     const result = await db.query(
       `UPDATE attendance 
-       SET check_out = $1, status = $2 
-       WHERE user_id = $3 AND date = $4 
-       RETURNING *`,
+       SET check_out = ?, status = ? 
+       WHERE user_id = ? AND date = ?`,
       [now, status, userId, today]
     );
+
+    const updatedAttendance = await db.query('SELECT * FROM attendance WHERE user_id = ? AND date = ?', [userId, today]);
 
     res.status(200).json({
       success: true,
       message: `Checked out successfully! Status: ${status}`,
-      attendance: result.rows[0]
+      attendance: updatedAttendance.rows[0]
     });
   } catch (err) {
     next(err);
@@ -97,11 +99,11 @@ const getMyAttendance = async (req, res, next) => {
   const { startDate, endDate } = req.query;
 
   try {
-    let query = 'SELECT * FROM attendance WHERE user_id = $1';
+    let query = 'SELECT * FROM attendance WHERE user_id = ?';
     const params = [req.user.id];
 
     if (startDate && endDate) {
-      query += ' AND date BETWEEN $2 AND $3';
+      query += ' AND date BETWEEN ? AND ?';
       params.push(startDate, endDate);
     }
 
@@ -118,7 +120,7 @@ const getTodayStatus = async (req, res, next) => {
   try {
     const today = new Date().toLocaleDateString('en-CA');
     const result = await db.query(
-      'SELECT check_in, check_out, status FROM attendance WHERE user_id = $1 AND date = $2',
+      'SELECT check_in, check_out, status FROM attendance WHERE user_id = ? AND date = ?',
       [req.user.id, today]
     );
 
@@ -180,32 +182,31 @@ const adminUpsertAttendance = async (req, res, next) => {
   try {
     // Check if record exists
     const checkResult = await db.query(
-      'SELECT id FROM attendance WHERE user_id = $1 AND date = $2',
+      'SELECT id FROM attendance WHERE user_id = ? AND date = ?',
       [userId, date]
     );
 
-    let result;
     if (checkResult.rowCount > 0) {
-      result = await db.query(
+      await db.query(
         `UPDATE attendance 
-         SET check_in = $1, check_out = $2, status = $3 
-         WHERE user_id = $4 AND date = $5 
-         RETURNING *`,
+         SET check_in = ?, check_out = ?, status = ? 
+         WHERE user_id = ? AND date = ?`,
         [checkIn || null, checkOut || null, status, userId, date]
       );
     } else {
-      result = await db.query(
+      await db.query(
         `INSERT INTO attendance (user_id, date, check_in, check_out, status) 
-         VALUES ($1, $2, $3, $4, $5) 
-         RETURNING *`,
+         VALUES (?, ?, ?, ?, ?)`,
         [userId, date, checkIn || null, checkOut || null, status]
       );
     }
 
+    const updatedRec = await db.query('SELECT * FROM attendance WHERE user_id = ? AND date = ?', [userId, date]);
+
     res.status(200).json({
       success: true,
       message: 'Attendance record updated successfully',
-      attendance: result.rows[0]
+      attendance: updatedRec.rows[0]
     });
   } catch (err) {
     next(err);

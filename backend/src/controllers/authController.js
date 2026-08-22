@@ -10,7 +10,7 @@ const signUp = async (req, res, next) => {
   try {
     // 1. Check if user already exists
     const userCheck = await db.query(
-      'SELECT id FROM users WHERE email = $1 OR employee_id = $2',
+      'SELECT id FROM users WHERE email = ? OR employee_id = ?',
       [email, employeeId]
     );
 
@@ -31,16 +31,16 @@ const signUp = async (req, res, next) => {
     // 4. Insert user
     const userResult = await db.query(
       `INSERT INTO users (employee_id, email, password_hash, role, is_verified, verification_token) 
-       VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, employee_id, email, role`,
+       VALUES (?, ?, ?, ?, ?, ?)`,
       [employeeId, email, passwordHash, role || 'employee', false, verificationToken]
     );
 
-    const userId = userResult.rows[0].id;
+    const userId = userResult.insertId;
 
     // 5. Create Profile
     await db.query(
       `INSERT INTO profiles (user_id, name, phone, address, job_title, department) 
-       VALUES ($1, $2, $3, $4, $5, $6)`,
+       VALUES (?, ?, ?, ?, ?, ?)`,
       [userId, name, phone || null, address || null, jobTitle || null, department || null]
     );
 
@@ -50,7 +50,7 @@ const signUp = async (req, res, next) => {
     res.status(201).json({
       success: true,
       message: 'Registration successful! Please check your email to verify your account.',
-      user: userResult.rows[0]
+      user: { id: userId, employee_id: employeeId, email, role: role || 'employee' }
     });
   } catch (err) {
     next(err);
@@ -63,7 +63,7 @@ const signIn = async (req, res, next) => {
   try {
     // 1. Fetch user
     const userResult = await db.query(
-      'SELECT * FROM users WHERE email = $1',
+      'SELECT * FROM users WHERE email = ?',
       [email]
     );
 
@@ -90,7 +90,7 @@ const signIn = async (req, res, next) => {
 
     // 4. Fetch Profile details to return in payload
     const profileResult = await db.query(
-      'SELECT name, job_title, department, profile_picture FROM profiles WHERE user_id = $1',
+      'SELECT name, job_title, department, profile_picture FROM profiles WHERE user_id = ?',
       [user.id]
     );
     const profile = profileResult.rows[0] || {};
@@ -127,7 +127,7 @@ const verifyEmail = async (req, res, next) => {
 
   try {
     const userResult = await db.query(
-      'SELECT id, is_verified FROM users WHERE email = $1 AND verification_token = $2',
+      'SELECT id, is_verified FROM users WHERE email = ? AND verification_token = ?',
       [email, token]
     );
 
@@ -148,7 +148,7 @@ const verifyEmail = async (req, res, next) => {
 
     // Mark as verified
     await db.query(
-      'UPDATE users SET is_verified = TRUE, verification_token = NULL WHERE id = $1',
+      'UPDATE users SET is_verified = TRUE, verification_token = NULL WHERE id = ?',
       [user.id]
     );
 
@@ -164,7 +164,7 @@ const verifyEmail = async (req, res, next) => {
 const getCurrentUser = async (req, res, next) => {
   try {
     const profileResult = await db.query(
-      'SELECT name, phone, address, job_title, department, profile_picture FROM profiles WHERE user_id = $1',
+      'SELECT name, phone, address, job_title, department, profile_picture FROM profiles WHERE user_id = ?',
       [req.user.id]
     );
     const profile = profileResult.rows[0] || {};
